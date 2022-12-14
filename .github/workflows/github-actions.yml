@@ -1,0 +1,26 @@
+name: Parkinson-diary CI/CD - Backend CI and CD with Docker & AWS ECS
+
+on:
+  push:
+    branches: [ "Master" ]
+
+permissions:
+  contents: read
+
+jobs:
+  API-SERVER-CI-CD:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: .
+    steps:
+      # 소스코드 다운로드
+      - name: Checkout code
+        uses: actions/checkout@v3
+      # Node 어플리케이션 Docker Image 빌드 및 DockerHub에 푸쉬
+      - name: Build Docker Image and Push DockerHub For Node.js
+        run: |
+          docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_NODEJS_REPOSITORY }}:latest \
+          -f dockerfiles/Dockerfile-prod .
+          docker push ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_NODEJS_REPOSITORY }}:latest

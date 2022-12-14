@@ -1,0 +1,49 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "르방이들 API 문서",
+    "description": "르방이들 프로젝트 API 명세서 입니다.",
+    "version": "1.0.0",
+    "license": "MIT"
+  },
+  "host": "http://exampledomain.com",
+  "basePath": "/",
+  "schemes": [
+    "http"
+  ],
+  "paths": {
+    "/api/users/sign-in": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "username": {
+                  "example": "any"
+                },
+                "kakao_talk_chatting_url": {
+                  "example": "any"
+                },
+                "role": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "201": {
+            "description": "Created"
+          }
+        }
+      }
+    }
+  }
+}
