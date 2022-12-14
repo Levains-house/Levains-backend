@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 import {UsersModel} from "./users.model";
-import {SignInRequest} from "./dto/users.signin.dto";
+import {AddressCreateRequest, SignInRequest} from "./dto/users.signin.dto";
 import {Users} from "./users";
 
 export class UsersService {
@@ -33,10 +33,17 @@ export class UsersService {
         return !await this.userModel.existsByUsername(username);
     }
 
+    public async createAddress(addressCreateRequest: AddressCreateRequest){
+        await this.userModel.saveAddress(addressCreateRequest.toAddresses());
+    }
+
     public async issueJwtToken(user: Users): Promise<string> {
+
+        const findUser = await this.userModel.findByUsername(user.username as string);
 
         const accessToken = jwt.sign({
             type: 'JWT',
+            user_id: findUser.user_id,
             username: user.username,
             kakao_talk_chatting_url: user.kakao_talk_chatting_url,
             role: user.role
@@ -48,10 +55,13 @@ export class UsersService {
         return process.env.JWT_PREFIX + accessToken;
     }
 
+
     public async reIssueJwtToken(signInRequest: SignInRequest): Promise<string> {
+        const findUser = await this.userModel.findByUsername(signInRequest.username);
 
         const accessToken = jwt.sign({
             type: 'JWT',
+            user_id: findUser.user_id,
             username: signInRequest.username,
             kakao_talk_chatting_url: signInRequest.kakao_talk_chatting_url,
             role: signInRequest.role

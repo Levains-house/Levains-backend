@@ -1,7 +1,8 @@
 import express, {NextFunction, Request, Response} from "express";
 import {appConfig} from "../../config/app.config";
 import {NotEnoughRequestDataError} from "./users.error";
-import {SignInRequest, SignInResponse} from "./dto/users.signin.dto";
+import {AddressCreateRequest, SignInRequest, SignInResponse} from "./dto/users.signin.dto";
+import {auth} from "../../middleware/auth";
 
 const router = express.Router();
 const userService = appConfig.UserService;
@@ -31,6 +32,28 @@ router.post("/sign-in", async (request: Request, response: Response, next: NextF
             return response.status(200)
                 .send(new SignInResponse(accessToken));
         }
+    } catch(error) {
+        next(error);
+    }
+});
+
+router.post("/sign-in/address", auth, async (request: Request, response: Response, next: NextFunction) => {
+    const userId = response.locals.token.user_id;
+    const requestBody = request.body;
+    try {
+        if(requestBody.address === undefined){
+            throw new NotEnoughRequestDataError(400, "요청 파라미터가 부족합니다");
+        }
+
+        await userService.createAddress(
+            new AddressCreateRequest(
+                userId,
+                requestBody.address
+            )
+        );
+
+        return response.sendStatus(200);
+
     } catch(error) {
         next(error);
     }

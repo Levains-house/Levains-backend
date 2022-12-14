@@ -1,5 +1,6 @@
 import {knex} from "../../config/db.config";
 import {Users} from "./users";
+import {Address} from "./address";
 
 export class UsersModel {
 
@@ -21,6 +22,14 @@ export class UsersModel {
         return user;
     }
 
+    public async findByUsername(username: string): Promise<Users>{
+        const user = await knex.select('*')
+            .from('Users AS U')
+            .where('U.username', username);
+
+        return user[0];
+    }
+
     public async existsByUsername(username: string) {
         const users: Array<Users> = await knex.select("*")
             .from("Users as U")
@@ -30,11 +39,8 @@ export class UsersModel {
         else return true;
     }
 
-    public async findByUsername(username: string): Promise<Users> {
-        const users: Array<Users> = await knex.select("*")
-            .from("Users as U")
-            .where("U.username", username);
-
-        return users[0];
+    public async saveAddress(address: Array<Address>) {
+        await knex.insert(address)
+            .into("Address");
     }
 }

@@ -6,7 +6,7 @@
     "version": "1.0.0",
     "license": "MIT"
   },
-  "host": "http://exampledomain.com",
+  "host": "http://levains-lb-2013408822.ap-northeast-2.elb.amazonaws.com",
   "basePath": "/",
   "schemes": [
     "http"
@@ -61,6 +61,78 @@
                 }
               }
             }
+          },
+          "400": {
+            "description": "요청 파라미터가 부족합니다",
+            "schema": {
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "요청 파라미터가 부족합니다"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "페이지를 찾을 수 없습니다",
+            "schema": {
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "페이지를 찾을 수 없습니다"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "서버 내부 오류입니다",
+            "schema": {
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "서버 내부 오류입니다"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/users/sign-in/address": {
+      "post": {
+        "summary": "사용자 주소 입력",
+        "description": "사용자 주소 입력 API",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "address": {
+                  "type": "array",
+                  "items": {
+                    "properties": {
+                      "latitude": {
+                        "type": "number",
+                        "description": "경도",
+                        "example": 123.123
+                      },
+                      "longitude": {
+                        "type": "number",
+                        "description": "위도",
+                        "example": 234.234
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
           },
           "400": {
             "description": "요청 파라미터가 부족합니다",
