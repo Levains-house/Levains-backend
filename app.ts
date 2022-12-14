@@ -6,6 +6,7 @@ import morgan from "morgan";
 import usersController from "./domain/users/users.controller";
 import swaggerUi from "swagger-ui-express";
 import swaggerFile from "./swagger/swagger-output.json";
+import healthcheckController from "./domain/healthcheck.controller";
 
 dotenv.config({
     path: path.resolve(__dirname, `env/${process.env.NODE_ENV}.env`)
@@ -22,6 +23,7 @@ if(process.env.NODE_ENV === "prod"){
     app.use(morgan("dev"));
 }
 
+app.use("/api/health-check", healthcheckController);
 app.use("/api/users", usersController);
 app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerFile));
 
