@@ -1,8 +1,8 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "르방이들 API 문서",
-    "description": "르방이들 프로젝트 API 명세서 입니다.",
+    "title": "멘도롱주멍 API 문서",
+    "description": "멘도롱주멍 프로젝트 API 명세서 입니다.",
     "version": "1.0.0",
     "license": "MIT"
   },
@@ -25,8 +25,8 @@
     },
     "/api/users": {
       "get": {
-        "summary": "르방이들 홈 화면",
-        "description": "르방이들 화면 API",
+        "summary": "멘도롱주멍 홈 화면",
+        "description": "멘도롱주멍 화면 API",
         "parameters": [
           {
             "name": "authorization",
@@ -165,8 +165,8 @@
     },
     "/api/users/profiles": {
       "get": {
-        "summary": "나의 르방",
-        "description": "나의 르방 조회 API",
+        "summary": "나의 주멍",
+        "description": "나의 주멍 조회 API",
         "parameters": [
           {
             "name": "authorization",
@@ -240,8 +240,8 @@
     },
     "/api/users/sign-in": {
       "post": {
-        "summary": "르방이들 로그인",
-        "description": "르방이들 로그인 API",
+        "summary": "멘도롱주멍 로그인",
+        "description": "멘도롱주멍 로그인 API",
         "parameters": [
           {
             "name": "body",
@@ -327,8 +327,8 @@
     },
     "/api/users/sign-in/address": {
       "post": {
-        "summary": "르방이들 사용자 주소 입력",
-        "description": "르방이들 사용자 주소 입력 API",
+        "summary": "멘도롱주멍 사용자 주소 입력",
+        "description": "멘도롱주멍 사용자 주소 입력 API",
         "parameters": [
           {
             "name": "authorization",
@@ -404,8 +404,8 @@
     },
     "/api/items/register": {
       "post": {
-        "summary": "상품 등록",
-        "description": "상품 등록 API",
+        "summary": "멘도롱주멍 상품 등록",
+        "description": "멘도롱주멍 상품 등록 API",
         "parameters": [
           {
             "name": "authorization",

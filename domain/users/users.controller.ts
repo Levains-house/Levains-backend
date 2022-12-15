@@ -19,6 +19,8 @@ router.get("/", auth, async (request: Request, response: Response, next: NextFun
         const experienceItems = await userService
             .getWantedCategoryItemsByExperience(userId, role, range);
 
+        console.log(userId);
+
         const categoryItemsResponse = Array<CategoryItemResponse>();
         for(let i = 0; i < categoryItems[0].length; i++){
             categoryItemsResponse.push(new CategoryItemResponse(
