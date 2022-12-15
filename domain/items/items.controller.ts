@@ -1,6 +1,6 @@
 import {NextFunction, Request, Response} from "express";
 import {appConfig} from "../../config/app.config";
-import {NotEnoughRequestDataError} from "./items.error";
+import {InvalidFieldTypeError, NotEnoughRequestDataError} from "./items.error";
 import router from "../users/users.controller";
 import {auth} from "../../middleware/auth";
 import multer from "multer";
@@ -15,27 +15,45 @@ router.post("/register", auth, upload.single('image'), async (request: Request, 
     const userId = response.locals.token.user_id;
     try {
         const requestBody = request.body;
-        if (request.file === undefined
-            || requestBody.name === undefined
+        if (requestBody.name === undefined
             || requestBody.description === undefined
             || requestBody.category === undefined
             || requestBody.purpose === undefined) {
             throw new NotEnoughRequestDataError(400, "요청 파라미터가 부족합니다");
         }
 
-        const fileData: Express.Multer.File = request.file;
-        const fileContent = await itemService.uploadImageToS3(fileData);
-        await itemService.registerItem(
-            new ItemRegisterRequest(
-                userId,
-                requestBody.purpose,
-                requestBody.category,
-                requestBody.name,
-                requestBody.description,
-                fileContent[0],
-                fileContent[1]
+        if(requestBody.purpose === "SHARE"){
+            if(request.file === undefined){
+                throw new NotEnoughRequestDataError(400, "요청 파라미터가 부족합니다");
+            }
+            const fileData: Express.Multer.File = request.file;
+            const fileContent = await itemService.uploadImageToS3(fileData);
+            await itemService.registerItem(
+                new ItemRegisterRequest(
+                    userId,
+                    requestBody.purpose,
+                    requestBody.category,
+                    requestBody.name,
+                    requestBody.description,
+                    fileContent[0],
+                    fileContent[1]
+                )
             )
-        )
+        } else if(requestBody.purpose === "WANT"){
+            await itemService.registerItem(
+                new ItemRegisterRequest(
+                    userId,
+                    requestBody.purpose,
+                    requestBody.category,
+                    requestBody.name,
+                    requestBody.description,
+                    "",
+                    ""
+                )
+            )
+        } else {
+            throw new InvalidFieldTypeError(400, "부적절한 요청 타입입니다");
+        }
 
         return response.sendStatus(200);
 

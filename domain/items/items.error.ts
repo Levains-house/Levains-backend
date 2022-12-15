@@ -6,3 +6,10 @@ export class NotEnoughRequestDataError extends CustomError {
         super(message);
     }
 }
+
+export class InvalidFieldTypeError extends CustomError {
+
+    constructor(public code: number, message: string) {
+        super(message);
+    }
+}
