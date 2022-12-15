@@ -1,7 +1,7 @@
 {
-  "name": "login",
+  "name": "levains",
   "version": "1.0.0",
-  "description": "login module",
+  "description": "levains module",
   "main": "app.ts",
   "scripts": {
     "prod": "cross-env NODE_ENV=prod SERVER_PORT=80 ts-node app.ts",
