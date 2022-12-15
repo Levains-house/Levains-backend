@@ -16,7 +16,10 @@ export class ItemsModel {
 
     public async save(items: Items) {
         await knex.insert(items)
-            .into("items");
+            .into("Items")
+            .catch((error) => {
+                throw error;
+            });
 
         return items;
     }

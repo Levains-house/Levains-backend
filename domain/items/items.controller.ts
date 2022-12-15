@@ -44,7 +44,7 @@ router.post("/register", auth, upload.single('image'), async (request: Request, 
     }
 });
 
-router.put("/status", auth, upload.single('image'), async (request: Request, response: Response, next: NextFunction) => {
+router.put("/status", auth, async (request: Request, response: Response, next: NextFunction) => {
 
     try {
         const requestBody = request.body;
