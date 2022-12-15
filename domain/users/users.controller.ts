@@ -16,14 +16,14 @@ router.get("/", auth, async (request: Request, response: Response, next: NextFun
     try {
         const categoryItems = await userService
             .getWantedCategoryItems(userId, role, range);
-        const ExperienceItems = await userService
+        const experienceItems = await userService
             .getWantedCategoryItemsByExperience(userId, role, range);
 
         return response
             .status(200)
             .send({
                 category_items: categoryItems,
-                all_experience_items: ExperienceItems
+                all_experience_items: experienceItems
             });
     } catch(error) {
         next(error);

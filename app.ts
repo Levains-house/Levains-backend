@@ -1,4 +1,5 @@
 import * as path from "path";
+import cors from "cors";
 import dotenv from "dotenv"; //It must be imported before express
 import express, {NextFunction, Request, Response} from "express";
 import morgan from "morgan";
@@ -16,6 +17,7 @@ dotenv.config({
 const app = express();
 
 //Content-Type: application/json
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 //로그 수준 설정
