@@ -105,7 +105,7 @@ export class UsersService {
         if (dist < 100) dist = Math.round(dist / 10) * 10;
         else dist = Math.round(dist / 100) * 100;
 
-        return dist;
+        return dist / 1000;
     }
 
     public async issueJwtToken(user: Users): Promise<string> {
