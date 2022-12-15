@@ -16,10 +16,10 @@ router.post("/register", auth, upload.single('image'), async (request: Request, 
     try {
         const requestBody = request.body;
         if (request.file === undefined
-            || requestBody.name
-            || requestBody.description
-            || requestBody.category
-            || requestBody.purpose) {
+            || requestBody.name === undefined
+            || requestBody.description === undefined
+            || requestBody.category === undefined
+            || requestBody.purpose === undefined) {
             throw new NotEnoughRequestDataError(400, "요청 파라미터가 부족합니다");
         }
 
@@ -48,8 +48,8 @@ router.put("/status", auth, upload.single('image'), async (request: Request, res
 
     try {
         const requestBody = request.body;
-        if (requestBody.item_id
-            || requestBody.trade_status) {
+        if (requestBody.item_id === undefined
+            || requestBody.trade_status === undefined) {
             throw new NotEnoughRequestDataError(400, "요청 파라미터가 부족합니다");
         }
 
