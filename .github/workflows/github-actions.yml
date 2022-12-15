@@ -17,6 +17,13 @@ jobs:
       # 소스코드 다운로드
       - name: Checkout code
         uses: actions/checkout@v3
+      # ENV 세팅
+      - name: Setting env file
+        run: |
+          mkdir env
+          touch ./env/prod.env
+          echo "${{ secrets.NODE_ENV }}" >> ./env/prod.env
+        shell: bash
       # Node 어플리케이션 Docker Image 빌드 및 DockerHub에 푸쉬
       - name: Build Docker Image and Push DockerHub For Node.js
         run: |
