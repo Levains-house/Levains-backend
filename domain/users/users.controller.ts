@@ -4,6 +4,7 @@ import {NotEnoughRequestDataError} from "./users.error";
 import {AddressCreateRequest, SignInRequest, SignInResponse} from "./dto/users.signin.dto";
 import {auth} from "../../middleware/auth";
 import {ProfileResponse} from "./dto/users.profiles.dto";
+import {CategoryItemResponse, ExperienceItemResponse, UserHomeResponse} from "./dto/users.items.dto";
 
 const router = express.Router();
 const userService = appConfig.UserService;
@@ -18,12 +19,29 @@ router.get("/", auth, async (request: Request, response: Response, next: NextFun
         const experienceItems = await userService
             .getWantedCategoryItemsByExperience(userId, role, range);
 
+        const categoryItemsResponse = Array<CategoryItemResponse>();
+        for(let i = 0; i < categoryItems[0].length; i++){
+            categoryItemsResponse.push(new CategoryItemResponse(
+                categoryItems[0][i].item_id,
+                categoryItems[0][i].img_url,
+                categoryItems[0][i].name,
+                categoryItems[0][i].description,
+                categoryItems[0][i].category,
+                categoryItems[0][i].kakao_talk_chatting_url,
+                categoryItems[1].name,
+                categoryItems[1].description,
+                categoryItems[1].category
+            ))
+        }
+
+        const experienceItemsResponse = Array<ExperienceItemResponse>();
+        experienceItems.map(e => experienceItemsResponse.push(e));
         return response
             .status(200)
-            .send({
-                category_items: categoryItems,
-                all_experience_items: experienceItems
-            });
+            .send(new UserHomeResponse(
+                categoryItemsResponse,
+                experienceItemsResponse
+            ));
     } catch(error) {
         next(error);
     }

@@ -74,24 +74,27 @@ export class UsersModel {
             .from("Items as ISW")
             .where("ISW.user_id", String(userId))
             .where("ISW.purpose", "WANT");
-
-        // const selectSubquery = await knex.select("ISS.category")
-        //     .from("Items as ISS")
-        //     .where("ISS.user_id", "=", "U.user_id")
-        //     .where("ISS.purpose", "WANT")
-        //     .as("want_category");
-
         const wantCategory = Array();
         whereSubquery.map(s => wantCategory.push(s.category));
-        const items = await knex
-            .select("I.item_id", "I.img_url", "I.name", "I.description", "I.category", "U.kakao_talk_chatting_url")
+
+        const selectSubquery = await knex
+            .select("ISS.name", "ISS.description", "ISS.category")
+            .from("Items as ISS")
+            .whereIn("ISS.user_id", otherUserIds)
+            .where("ISS.purpose", "WANT");
+        const random = Math.floor(Math.random() * selectSubquery.length);
+        const wantItems = selectSubquery[random];
+
+        const sharedItems = await knex
+            .select("I.item_id", "I.img_url", "I.name", "I.description",
+                "I.category", "U.kakao_talk_chatting_url")
             .from("Users as U")
             .innerJoin('Items as I', 'U.user_id', '=', 'I.user_id')
             .where("I.purpose", "SHARE")
             .whereIn("I.category", wantCategory)
             .whereIn("U.user_id", otherUserIds);
 
-        return items;
+        return [sharedItems, wantItems];
     }
 
     public async findWantItemsByUserIdsAndCategory(otherUserIds: any[], category: string){

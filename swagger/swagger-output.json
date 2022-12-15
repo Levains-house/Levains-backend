@@ -64,7 +64,7 @@
                         "description": "상품 이름"
                       },
                       "description": {
-                        "type": "number",
+                        "type": "string",
                         "description": "상품 상세정보"
                       },
                       "category": {
@@ -75,11 +75,24 @@
                       "kakao_talk_chatting_url": {
                         "type": "string",
                         "description": "사용자 오픈 채팅방"
+                      },
+                      "want_name": {
+                        "type": "string",
+                        "description": "원하는 상품 이름"
+                      },
+                      "want_description": {
+                        "type": "number",
+                        "description": "원하는 상품 상세정보"
+                      },
+                      "want_category": {
+                        "type": "string",
+                        "description": "원하는 상품 카테고리",
+                        "example": "CLOTH, THINGS, BOOK, LIVE_THINGS, BABY_THINGS, EXPERIENCE"
                       }
                     }
                   }
                 },
-                "all_experience_items": {
+                "experience_items": {
                   "type": "array",
                   "items": {
                     "properties": {
@@ -176,7 +189,7 @@
                         "description": "상품 id"
                       },
                       "name": {
-                        "type": "number",
+                        "type": "string",
                         "description": "상품 이름"
                       },
                       "trade_status": {

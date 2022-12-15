@@ -46,19 +46,12 @@ export class UsersService {
         // 현재 사용자, 주소 정보들을 불러온다.
         const users = await this.userModel
             .findUserAndAddressByUserId(userId);
-        // console.log(`Now User=${users[0].user_id}`);
         // 현재 사용자와 다른 유형의 사용자, 주소 정보들을 불러온다.
         const otherUsers = await this.userModel
             .findUserAndAddressByUserIdAndOppositeRole(userId, role);
-        // console.log(`Other Users length=${otherUsers.length}`);
-        // for(let i = 0; i < otherUsers.length; i++){
-        //     console.log(`Other User=${otherUsers[i].latitude}`);
-        // }
         // 다른 유형의 사용자 중에 거리 범위내에 있는 사용자를 조회한다.
         const userIds = await this.getValidUserBetweenTwoUsersByRange(users, otherUsers, range);
-        // for(let i = 0; i < userIds.length; i++){
-        //     console.log(`distinct user ids=${userIds[i]}`);
-        // }
+
         // 조회한 다른 유형의 사용자의 PK로 상품 조회
         return await this.userModel
             .findSharedItemsByUserIds(userId, userIds);
