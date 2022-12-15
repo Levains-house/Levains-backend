@@ -7,12 +7,11 @@ import {ProfileResponse} from "./dto/users.profiles.dto";
 
 const router = express.Router();
 const userService = appConfig.UserService;
-const userModel = appConfig.UserModel;
 
 router.get("/", auth, async (request: Request, response: Response, next: NextFunction) => {
     const userId = response.locals.token.user_id;
     const role = response.locals.token.role;
-    const range = Number(request.params.range);
+    const range = Number(request.query.range);
     try {
         const categoryItems = await userService
             .getWantedCategoryItems(userId, role, range);

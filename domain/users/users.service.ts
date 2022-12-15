@@ -44,16 +44,24 @@ export class UsersService {
 
     public async getWantedCategoryItems(userId: bigint, role: string, range: number) {
         // 현재 사용자, 주소 정보들을 불러온다.
-        const user = await this.userModel
+        const users = await this.userModel
             .findUserAndAddressByUserId(userId);
+        // console.log(`Now User=${users[0].user_id}`);
         // 현재 사용자와 다른 유형의 사용자, 주소 정보들을 불러온다.
-        const difUsers = await this.userModel
+        const otherUsers = await this.userModel
             .findUserAndAddressByUserIdAndOppositeRole(userId, role);
+        // console.log(`Other Users length=${otherUsers.length}`);
+        // for(let i = 0; i < otherUsers.length; i++){
+        //     console.log(`Other User=${otherUsers[i].latitude}`);
+        // }
         // 다른 유형의 사용자 중에 거리 범위내에 있는 사용자를 조회한다.
-        const userIds = await this.getValidUserBetweenTwoUsersByRange(user, difUsers, range);
+        const userIds = await this.getValidUserBetweenTwoUsersByRange(users, otherUsers, range);
+        // for(let i = 0; i < userIds.length; i++){
+        //     console.log(`distinct user ids=${userIds[i]}`);
+        // }
         // 조회한 다른 유형의 사용자의 PK로 상품 조회
         return await this.userModel
-            .findSharedItemsByUserIds(userIds);
+            .findSharedItemsByUserIds(userId, userIds);
     }
 
     public async getWantedCategoryItemsByExperience(userId: bigint, role: string, range: number) {
@@ -62,14 +70,14 @@ export class UsersService {
         const difUsers = await this.userModel
             .findUserAndAddressByUserIdAndOppositeRole(userId, role);
 
-        const userIdArr = await this.getValidUserBetweenTwoUsersByRange(user, difUsers, range);
+        const userIds = await this.getValidUserBetweenTwoUsersByRange(user, difUsers, range);
 
         return await this.userModel
-            .findWantItemsByUserIdsAndCategory(userIdArr, "EXPERIENCE");
+            .findWantItemsByUserIdsAndCategory(userIds, "EXPERIENCE");
     }
 
     private async getValidUserBetweenTwoUsersByRange(users: any[], otherUsers: any[], range: number){
-        const userIdArr = Array();
+        let userIds = Array();
         for(let i = 0; i < users.length; i++){
             for(let j = 0; j < otherUsers.length; j++){
                 const distance = await this.getDistance(
@@ -78,13 +86,17 @@ export class UsersService {
                     otherUsers[j].latitude,
                     otherUsers[j].longitude
                 );
+
                 if(distance <= range){
-                    userIdArr.push(otherUsers[j].user_id);
+                    userIds.push(otherUsers[j].user_id);
                 }
             }
         }
+        userIds.filter((element, index) => {
+            return userIds.indexOf(element) === index;
+        });
 
-        return userIdArr;
+        return userIds;
     }
 
     private async getDistance(lat1: number, lon1: number, lat2: number, lon2: number) {

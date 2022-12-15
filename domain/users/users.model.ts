@@ -68,27 +68,41 @@ export class UsersModel {
             .into("Address");
     }
 
-    public async findSharedItemsByUserIds(userIds: any[]){
+    public async findSharedItemsByUserIds(userId: bigint, otherUserIds: any[]){
+
+        const whereSubquery = await knex.select("ISW.category")
+            .from("Items as ISW")
+            .where("ISW.user_id", String(userId))
+            .where("ISW.purpose", "WANT");
+
+        // const selectSubquery = await knex.select("ISS.category")
+        //     .from("Items as ISS")
+        //     .where("ISS.user_id", "=", "U.user_id")
+        //     .where("ISS.purpose", "WANT")
+        //     .as("want_category");
+
+        const wantCategory = Array();
+        whereSubquery.map(s => wantCategory.push(s.category));
+        const items = await knex
+            .select("I.item_id", "I.img_url", "I.name", "I.description", "I.category", "U.kakao_talk_chatting_url")
+            .from("Users as U")
+            .innerJoin('Items as I', 'U.user_id', '=', 'I.user_id')
+            .where("I.purpose", "SHARE")
+            .whereIn("I.category", wantCategory)
+            .whereIn("U.user_id", otherUserIds);
+
+        return items;
+    }
+
+    public async findWantItemsByUserIdsAndCategory(otherUserIds: any[], category: string){
 
         const items = await knex
             .select("I.item_id", "I.img_url", "I.name", "I.description", "I.category", "U.kakao_talk_chatting_url")
             .from("Users as U")
             .innerJoin('Items as I', 'U.user_id', '=', 'I.user_id')
             .where("I.purpose", "SHARE")
-            .whereIn("U.user_id", userIds);
-
-        return items;
-    }
-
-    public async findWantItemsByUserIdsAndCategory(userIds: any[], category: string){
-
-        const items = await knex
-            .select("I.item_id", "I.img_url", "I.name", "I.description", "I.category", "U.kakao_talk_chatting_url")
-            .from("Users as U")
-            .innerJoin('Items as I', 'U.user_id', '=', 'I.user_id')
-            .where("I.purpose", "WANT")
             .where("I.category", category)
-            .whereIn("U.user_id", userIds);
+            .whereIn("U.user_id", otherUserIds);
 
         return items;
     }
