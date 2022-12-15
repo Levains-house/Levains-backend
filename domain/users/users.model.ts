@@ -95,7 +95,7 @@ export class UsersModel {
 
     public async findSharedItemsByUserId(userId: bigint) {
         const items = await knex
-            .select("I.item_id, I.name, I.trade_status")
+            .select("I.item_id", "I.name", "I.trade_status")
             .from("Users as U")
             .innerJoin("Items as I", "U.user_id", "=", "I.user_id")
             .where("U.user_id", String(userId))
