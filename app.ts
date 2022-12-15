@@ -11,7 +11,7 @@ import itemsController from "./domain/items/items.controller";
 
 dotenv.config({
     path: path.resolve(__dirname, `env/${process.env.NODE_ENV}.env`)
-})
+});
 
 const app = express();
 
