@@ -17,8 +17,9 @@ router.post("/register", auth, upload.single('image'), async (request: Request, 
         const requestBody = request.body;
         if (request.file === undefined
             || requestBody.name
+            || requestBody.description
             || requestBody.category
-            || requestBody.item_type) {
+            || requestBody.purpose) {
             throw new NotEnoughRequestDataError(400, "요청 파라미터가 부족합니다");
         }
 
@@ -27,13 +28,34 @@ router.post("/register", auth, upload.single('image'), async (request: Request, 
         await itemService.registerItem(
             new ItemRegisterRequest(
                 userId,
-                requestBody.item_type,
+                requestBody.purpose,
                 requestBody.category,
                 requestBody.name,
+                requestBody.description,
                 fileContent[0],
                 fileContent[1]
             )
         )
+
+        return response.sendStatus(200);
+
+    } catch(error) {
+        next(error);
+    }
+});
+
+router.put("/status", auth, upload.single('image'), async (request: Request, response: Response, next: NextFunction) => {
+
+    try {
+        const requestBody = request.body;
+        if (requestBody.item_id
+            || requestBody.trade_status) {
+            throw new NotEnoughRequestDataError(400, "요청 파라미터가 부족합니다");
+        }
+
+        await itemService.updateItemTradeStatus(
+            requestBody.item_id,
+            requestBody.trade_status);
 
         return response.sendStatus(200);
 

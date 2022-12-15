@@ -7,7 +7,7 @@ export class Items {
     public description: string | undefined;
     public img_name: string | undefined;
     public img_url: string | undefined;
-    public item_type: string | undefined;
+    public purpose: string | undefined;
     public category: string | undefined;
     public trade_status: string | undefined;
 }
@@ -46,7 +46,7 @@ export class ItemBuilder {
     }
 
     itemType(itemType: string){
-        this.item.item_type = itemType;
+        this.item.purpose = itemType;
         return this;
     }
 

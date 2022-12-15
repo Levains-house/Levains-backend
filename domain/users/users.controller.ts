@@ -3,6 +3,7 @@ import {appConfig} from "../../config/app.config";
 import {NotEnoughRequestDataError} from "./users.error";
 import {AddressCreateRequest, SignInRequest, SignInResponse} from "./dto/users.signin.dto";
 import {auth} from "../../middleware/auth";
+import {ProfileResponse} from "./dto/users.profiles.dto";
 
 const router = express.Router();
 const userService = appConfig.UserService;
@@ -13,21 +14,43 @@ router.get("/", auth, async (request: Request, response: Response, next: NextFun
     const role = response.locals.token.role;
     const range = Number(request.params.range);
     try {
-        const categoryItems = await userService.getDifferentUsersByRange(userId, role, range);
-        const ExperienceItems = await userService.getExperienceDifferentUsersByRange(userId, role, range);
-
+        const categoryItems = await userService
+            .getWantedCategoryItems(userId, role, range);
+        const ExperienceItems = await userService
+            .getWantedCategoryItemsByExperience(userId, role, range);
 
         return response
             .status(200)
             .send({
-            category_items: categoryItems,
-            experience_items: ExperienceItems
-        });
+                category_items: categoryItems,
+                all_experience_items: ExperienceItems
+            });
     } catch(error) {
         next(error);
     }
 });
 
+router.get("/profiles", auth, async (request: Request, response: Response, next: NextFunction) => {
+    const userId = response.locals.token.user_id;
+    try {
+        const items = await userService.getSharedUserItemsByUserId(userId);
+
+        const profileResponses = Array<ProfileResponse>();
+        for(let i = 0; i < items.length; i++){
+            profileResponses.push(new ProfileResponse(
+                items[i].item_id,
+                items[i].name,
+                items[i].trade_status));
+        }
+        return response
+            .status(200)
+            .send({
+                items: profileResponses
+            });
+    } catch(error) {
+        next(error);
+    }
+});
 
 router.post("/sign-in", async (request: Request, response: Response, next: NextFunction) => {
     const requestBody = request.body;
@@ -86,7 +109,7 @@ router.use((error: Error, request: Request, response: Response, next: NextFuncti
     if(error instanceof NotEnoughRequestDataError){
         return response.status(error.code).json({message: error.message});
     }  else {
-        return response.status(500).json({message: "서버 내부 오류입나다"});
+        return response.status(500).json({message: error.message});
     }
 });
 

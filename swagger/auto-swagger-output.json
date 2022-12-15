@@ -12,7 +12,7 @@
     "http"
   ],
   "paths": {
-    "/api/health-check/": {
+    "/api/health-check": {
       "get": {
         "description": "",
         "parameters": [],
@@ -24,6 +24,23 @@
       }
     },
     "/api/users/": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/users/profiles": {
       "get": {
         "description": "",
         "parameters": [
@@ -107,6 +124,11 @@
         "description": "",
         "parameters": [
           {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          },
+          {
             "name": "body",
             "in": "body",
             "schema": {
@@ -115,7 +137,13 @@
                 "name": {
                   "example": "any"
                 },
+                "description": {
+                  "example": "any"
+                },
                 "category": {
+                  "example": "any"
+                },
+                "purpose": {
                   "example": "any"
                 }
               }
@@ -125,15 +153,41 @@
         "responses": {
           "200": {
             "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/items/status": {
+      "put": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
           },
-          "500": {
-            "description": "Internal Server Error"
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "item_id": {
+                  "example": "any"
+                },
+                "trade_status": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
           }
         }
       }
     }
-  },
-  "schemas": [
-    "http"
-  ]
+  }
 }

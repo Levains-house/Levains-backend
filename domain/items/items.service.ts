@@ -27,7 +27,13 @@ export class ItemsService {
 
 
     public async registerItem(itemRegisterRequest: ItemRegisterRequest) {
-        await this.itemModel.save(itemRegisterRequest.toItem());
+        await this.itemModel
+            .save(itemRegisterRequest.toItem());
+    }
+
+    public async updateItemTradeStatus(itemId: bigint, tradeStatus: string){
+        await this.itemModel
+            .updateTradeStatusByItemId(itemId, tradeStatus);
     }
 
     public async uploadImageToS3(fileData: Express.Multer.File): Promise<Array<string>> {

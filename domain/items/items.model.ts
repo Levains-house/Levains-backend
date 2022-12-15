@@ -21,4 +21,15 @@ export class ItemsModel {
         return items;
     }
 
+    public async updateTradeStatusByItemId(itemId: bigint, tradeStatus: string) {
+        await knex("Items as I")
+            .update({
+                trade_status: tradeStatus
+            })
+            .where("I.item_id", String(itemId))
+            .catch((error) => {
+                throw error;
+            });
+    }
+
 }

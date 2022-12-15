@@ -23,12 +23,27 @@ export class UsersModel {
     }
 
     public async findUserAndAddressByUserId(userId: bigint){
-        const user = await knex.select('*')
+        const users = await knex.select('*')
             .from('Users AS U')
             .innerJoin('Address as A', 'U.user_id', '=', 'A.user_id')
             .where('U.user_id', String(userId));
 
-        return user;
+        return users;
+    }
+
+    public async findUserAndAddressByUserIdAndOppositeRole(userId: bigint, role: string){
+
+        let difRole = "LOCAL";
+        if(role === "LOCAL"){
+            difRole = "TRAVEL";
+        }
+        const users = await knex
+            .select("*")
+            .from("Users as U")
+            .innerJoin('Address as A', 'U.user_id', '=', 'A.user_id')
+            .where("U.role", difRole);
+
+        return users;
     }
 
     public async findByUsername(username: string): Promise<Users>{
@@ -53,42 +68,38 @@ export class UsersModel {
             .into("Address");
     }
 
-    public async findDifferentSideUserByUserId(userId: bigint, role: string){
-
-        let difRole = "LOCAL";
-        if(role === "LOCAL"){
-            difRole = "TRAVEL";
-        }
-        const difUsers = await knex
-            .select("*")
-            .from("Users as U")
-            .innerJoin('Address as A', 'U.user_id', '=', 'A.user_id')
-            .where("U.role", difRole);
-
-        return difUsers;
-    }
-
-    public async findUserAndItemsByUserIdsAndItemType(userIdArr: any[], itemType: string){
+    public async findSharedItemsByUserIds(userIds: any[]){
 
         const items = await knex
-            .select("*")
+            .select("I.item_id, I.img_url, I.name, I.description, I.category, U.kakao_talk_chatting_url")
             .from("Users as U")
             .innerJoin('Items as I', 'U.user_id', '=', 'I.user_id')
-            .where("I.item_type", itemType)
-            .whereIn("U.user_id", userIdArr);
+            .where("I.purpose", "SHARE")
+            .whereIn("U.user_id", userIds);
 
         return items;
     }
 
-    public async findUserAndItemsByUserIdsAndItemTypeAndCategoryExperience(userIdArr: any[], itemType: string){
+    public async findWantItemsByUserIdsAndCategory(userIds: any[], category: string){
 
         const items = await knex
-            .select("*")
+            .select("I.item_id, I.img_url, I.name, I.description, I.category, U.kakao_talk_chatting_url")
             .from("Users as U")
             .innerJoin('Items as I', 'U.user_id', '=', 'I.user_id')
-            .where("I.item_type", itemType)
-            .where("I.item.category", "EXPERIENCE")
-            .whereIn("U.user_id", userIdArr);
+            .where("I.purpose", "WANT")
+            .where("I.category", category)
+            .whereIn("U.user_id", userIds);
+
+        return items;
+    }
+
+    public async findSharedItemsByUserId(userId: bigint) {
+        const items = await knex
+            .select("I.item_id, I.name, I.trade_status")
+            .from("Users as U")
+            .innerJoin("Items as I", "U.user_id", "=", "I.user_id")
+            .where("U.user_id", String(userId))
+            .where("I.purpose", "SHARE");
 
         return items;
     }

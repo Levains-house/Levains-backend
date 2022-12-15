@@ -37,42 +37,49 @@ export class UsersService {
         await this.userModel.saveAddress(addressCreateRequest.toAddresses());
     }
 
-    public async getDifferentUsersByRange(userId: bigint, role: string, range: number) {
+    public async getSharedUserItemsByUserId(userId: bigint) {
+        return await this.userModel
+            .findSharedItemsByUserId(userId);
+    }
+
+    public async getWantedCategoryItems(userId: bigint, role: string, range: number) {
+        // 현재 사용자, 주소 정보들을 불러온다.
+        const user = await this.userModel
+            .findUserAndAddressByUserId(userId);
+        // 현재 사용자와 다른 유형의 사용자, 주소 정보들을 불러온다.
+        const difUsers = await this.userModel
+            .findUserAndAddressByUserIdAndOppositeRole(userId, role);
+        // 다른 유형의 사용자 중에 거리 범위내에 있는 사용자를 조회한다.
+        const userIds = await this.getValidUserBetweenTwoUsersByRange(user, difUsers, range);
+        // 조회한 다른 유형의 사용자의 PK로 상품 조회
+        return await this.userModel
+            .findSharedItemsByUserIds(userIds);
+    }
+
+    public async getWantedCategoryItemsByExperience(userId: bigint, role: string, range: number) {
         const user = await this.userModel
             .findUserAndAddressByUserId(userId);
         const difUsers = await this.userModel
-            .findDifferentSideUserByUserId(userId, role);
+            .findUserAndAddressByUserIdAndOppositeRole(userId, role);
 
-        const userIdArr = await this.distinctRangeUser(user, difUsers, range);
-
-        return await this.userModel
-            .findUserAndItemsByUserIdsAndItemType(userIdArr, "OPPONENT");
-    }
-
-    public async getExperienceDifferentUsersByRange(userId: bigint, role: string, range: number) {
-        const user = await this.userModel
-            .findUserAndAddressByUserId(userId);
-        const difUsers = await this.userModel
-            .findDifferentSideUserByUserId(userId, role);
-
-        const userIdArr = await this.distinctRangeUser(user, difUsers, range);
+        const userIdArr = await this.getValidUserBetweenTwoUsersByRange(user, difUsers, range);
 
         return await this.userModel
-            .findUserAndItemsByUserIdsAndItemTypeAndCategoryExperience(userIdArr, "OPPONENT");
+            .findWantItemsByUserIdsAndCategory(userIdArr, "EXPERIENCE");
     }
 
-    private async distinctRangeUser(user: any[], difUsers: any[], range: number){
+    private async getValidUserBetweenTwoUsersByRange(users: any[], otherUsers: any[], range: number){
         const userIdArr = Array();
-        for(let i = 0; i < user.length; i++){
-            for(let j = 0; j < difUsers.length; j++){
+        for(let i = 0; i < users.length; i++){
+            for(let j = 0; j < otherUsers.length; j++){
                 const distance = await this.getDistance(
-                    user[i].latitude,
-                    user[i].longitude,
-                    difUsers[j].latitude,
-                    difUsers[j].longitude
+                    users[i].latitude,
+                    users[i].longitude,
+                    otherUsers[j].latitude,
+                    otherUsers[j].longitude
                 );
                 if(distance <= range){
-                    userIdArr.push(difUsers[j].user_id);
+                    userIdArr.push(otherUsers[j].user_id);
                 }
             }
         }
