@@ -71,7 +71,7 @@ export class UsersModel {
     public async findSharedItemsByUserIds(userIds: any[]){
 
         const items = await knex
-            .select("I.item_id, I.img_url, I.name, I.description, I.category, U.kakao_talk_chatting_url")
+            .select("I.item_id", "I.img_url", "I.name", "I.description", "I.category", "U.kakao_talk_chatting_url")
             .from("Users as U")
             .innerJoin('Items as I', 'U.user_id', '=', 'I.user_id')
             .where("I.purpose", "SHARE")
@@ -83,7 +83,7 @@ export class UsersModel {
     public async findWantItemsByUserIdsAndCategory(userIds: any[], category: string){
 
         const items = await knex
-            .select("I.item_id, I.img_url, I.name, I.description, I.category, U.kakao_talk_chatting_url")
+            .select("I.item_id", "I.img_url", "I.name", "I.description", "I.category", "U.kakao_talk_chatting_url")
             .from("Users as U")
             .innerJoin('Items as I', 'U.user_id', '=', 'I.user_id')
             .where("I.purpose", "WANT")
