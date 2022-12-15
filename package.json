@@ -4,7 +4,7 @@
   "description": "levains module",
   "main": "app.ts",
   "scripts": {
-    "prod": "cross-env NODE_ENV=prod SERVER_PORT=80 ts-node app.ts",
+    "prod": "NODE_ENV=prod node dist/app.js",
     "dev": "cross-env NODE_ENV=dev SERVER_PORT=3001 nodemon --watch \"*.ts\" --exec \"ts-node\" app.ts",
     "api-docs": "node ./swagger/swagger.config.js"
   },

@@ -36,10 +36,10 @@ app.use((error: Error, request: Request, response: Response, next: NextFunction)
     return response.status(404).send({message: "페이지를 찾을 수 없습니다"});
 });
 
-// app.listen(process.env.SERVER_PORT, () => {
-//     console.log(`listening on ${process.env.SERVER_PORT}`);
-// });
-
-app.listen(80, () => {
-    console.log(`listening on 80`);
+app.listen(process.env.SERVER_PORT, () => {
+    console.log(`listening on ${process.env.SERVER_PORT}`);
 });
+
+// app.listen(80, () => {
+//     console.log(`listening on 80`);
+// });
