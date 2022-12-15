@@ -33,9 +33,13 @@ app.use("/api/users", usersController);
 app.use("/api/items", itemsController);
 app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerFile));
 
-app.use((error: Error, request: Request, response: Response, next: NextFunction) => {
+app.use((error: Error | any, request: Request, response: Response, next: NextFunction) => {
     console.error(`error:${error}`);
-    return response.status(404).send({message: "페이지를 찾을 수 없습니다"});
+    if(error instanceof SyntaxError){
+        return response.status(404).send({message: "페이지를 찾을 수 없습니다"});
+    } else {
+        return response.status(error.code).send({message: error.message});
+    }
 });
 
 app.listen(process.env.SERVER_PORT, () => {
