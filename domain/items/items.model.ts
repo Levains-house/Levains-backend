@@ -14,7 +14,7 @@ export class ItemsModel {
 
     private constructor(){}
 
-    public async save(items: Array<Items>) {
+    public async save(items: Items) {
         await knex.insert(items)
             .into("items");
 

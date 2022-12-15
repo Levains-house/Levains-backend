@@ -6,6 +6,7 @@ import s3 from "../../config/s3.config";
 import {AWSS3Error} from "./s3.error";
 import {ManagedUpload} from "aws-sdk/lib/s3/managed_upload";
 import SendData = ManagedUpload.SendData;
+import {ItemRegisterRequest} from "./dto/items.register.dto";
 
 export class ItemsService {
 
@@ -24,42 +25,12 @@ export class ItemsService {
         this.itemModel = itemModel;
     }
 
-    // public async uploadImageToS3(fileData: Express.Multer.File) {
-    //     try {
-    //         const fileContent: Buffer = fs.readFileSync(fileData.path);
-    //
-    //         const params: {
-    //             Bucket: string;
-    //             Key: string;
-    //             Body: Buffer;
-    //         } = {
-    //             Bucket: config.bucketName,
-    //             Key: fileData.originalname,
-    //             Body: fileContent
-    //         };
-    //
-    //         const result = await storage.upload(params).promise();
-    //
-    //         const file = new File({
-    //             link: result.Location,
-    //             fileName: fileData.originalname
-    //         });
-    //
-    //         await file.save();
-    //
-    //         const data = {
-    //             _id: file._id,
-    //             link: result.Location
-    //         };
-    //
-    //         return data;
-    //     } catch (error) {
-    //         console.log(error);
-    //         throw error;
-    //     }
-    // }
 
-    public async uploadImageToS3(fileData: Express.Multer.File): Promise<string> {
+    public async registerItem(itemRegisterRequest: ItemRegisterRequest) {
+        await this.itemModel.save(itemRegisterRequest.toItem());
+    }
+
+    public async uploadImageToS3(fileData: Express.Multer.File): Promise<Array<string>> {
         const filePath = path.join(__dirname, `../../uploads/${fileData.filename}`);
         const fileStream = await fs.createReadStream(filePath);
         await fileStream.on('error', (error: Error) => {
@@ -68,19 +39,19 @@ export class ItemsService {
 
         const uploadParams = {
             Bucket: process.env.S3_BUCKET_NAME as string,
-            Key: path.basename(filePath),
+            Key: path.basename(filePath) + path.extname(fileData.originalname),
             Body: fileStream
         };
 
-        await s3.upload(uploadParams, (error: Error, data: SendData) => {
+        const result = await s3.upload(uploadParams, (error: Error, data: SendData) => {
             if (error) {
                 throw new AWSS3Error(500, `파일 업로드에 실패하였습니다:${error}`);
             } else {
                 console.log(`File upload successful=${data.Key}`);
             }
-        });
+        }).promise();
 
-        return fileData.originalname;
+        return [fileData.originalname + path.extname(fileData.originalname), result.Location];
     }
 
 }

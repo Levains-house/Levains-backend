@@ -1,7 +1,7 @@
 import {Request, Response} from "express";
 import router from "./users/users.controller";
 
-router.get("/", async (request: Request, response: Response) => {
+router.get("/api/health-check", async (request: Request, response: Response) => {
     return response.sendStatus(200);
 });
 

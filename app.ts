@@ -25,7 +25,7 @@ if(process.env.NODE_ENV === "prod"){
     app.use(morgan("dev"));
 }
 
-app.use("/api/health-check", healthcheckController);
+app.use("/", healthcheckController);
 
 app.use("/api/users", usersController);
 app.use("/api/items", itemsController);

@@ -172,11 +172,12 @@
                 },
                 "kakao_talk_chatting_url": {
                   "type": "string",
-                  "description": "사용자 아이디"
+                  "description": "카카오톡 채팅방 URL"
                 },
                 "role": {
                   "type": "string",
-                  "description": "사용자 아이디"
+                  "description": "사용자 역할",
+                  "example": "LOCAL, TRAVEL"
                 }
               }
             }
@@ -268,6 +269,79 @@
                       }
                     }
                   }
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "요청 파라미터가 부족합니다",
+            "schema": {
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "요청 파라미터가 부족합니다"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "페이지를 찾을 수 없습니다",
+            "schema": {
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "페이지를 찾을 수 없습니다"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "서버 내부 오류입니다",
+            "schema": {
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "서버 내부 오류입니다"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/items/register": {
+      "post": {
+        "summary": "상품 등록",
+        "description": "상품 등록 API",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "image": {
+                  "type": "number",
+                  "description": "사진 데이터"
+                },
+                "name": {
+                  "type": "string",
+                  "description": "상품 이름"
+                },
+                "category": {
+                  "type": "string",
+                  "description": "상품 카테고리",
+                  "example": "CLOTH, THINGS, BOOK, LIVE_THINGS, BABY_THINGS, EXPERIENCE"
+                },
+                "item_type": {
+                  "type": "string",
+                  "description": "상품 타입",
+                  "example": "MINE, OPPONENT"
                 }
               }
             }
