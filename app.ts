@@ -26,9 +26,11 @@ if(process.env.NODE_ENV === "prod"){
 }
 
 app.use("/api/health-check", healthcheckController);
+
 app.use("/api/users", usersController);
 app.use("/api/items", itemsController);
 app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerFile));
+
 
 app.use((error: Error, request: Request, response: Response, next: NextFunction) => {
     return response.status(404).send({message: "페이지를 찾을 수 없습니다"});

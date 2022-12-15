@@ -4,6 +4,7 @@ export class Items {
     public item_id: bigint | undefined;
     public user_id: bigint | undefined;
     public name: string | undefined;
+    public description: string | undefined;
     public img_name: string | undefined;
     public img_url: string | undefined;
     public item_type: string | undefined;
@@ -26,6 +27,11 @@ export class ItemBuilder {
 
     name(name: string){
         this.item.name = name;
+        return this;
+    }
+
+    description(description: string){
+        this.item.description = description;
         return this;
     }
 

@@ -21,6 +21,7 @@ CREATE TABLE Items (
     category VARCHAR(255) NOT NULL,
     trade_status VARCHAR(255) NOT NULL,
     name VARCHAR(255) NOT NULL,
+    description VARCHAR(255) NOT NULL,
     img_name VARCHAR(255) NOT NULL,
     img_url VARCHAR(255) NOT NULL
 

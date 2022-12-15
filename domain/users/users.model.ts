@@ -22,6 +22,15 @@ export class UsersModel {
         return user;
     }
 
+    public async findUserAndAddressByUserId(userId: bigint){
+        const user = await knex.select('*')
+            .from('Users AS U')
+            .innerJoin('Address as A', 'U.user_id', '=', 'A.user_id')
+            .where('U.user_id', String(userId));
+
+        return user;
+    }
+
     public async findByUsername(username: string): Promise<Users>{
         const user = await knex.select('*')
             .from('Users AS U')
@@ -42,5 +51,45 @@ export class UsersModel {
     public async saveAddress(address: Array<Address>) {
         await knex.insert(address)
             .into("Address");
+    }
+
+    public async findDifferentSideUserByUserId(userId: bigint, role: string){
+
+        let difRole = "LOCAL";
+        if(role === "LOCAL"){
+            difRole = "TRAVEL";
+        }
+        const difUsers = await knex
+            .select("*")
+            .from("Users as U")
+            .innerJoin('Address as A', 'U.user_id', '=', 'A.user_id')
+            .where("U.role", difRole);
+
+        return difUsers;
+    }
+
+    public async findUserAndItemsByUserIdsAndItemType(userIdArr: any[], itemType: string){
+
+        const items = await knex
+            .select("*")
+            .from("Users as U")
+            .innerJoin('Items as I', 'U.user_id', '=', 'I.user_id')
+            .where("I.item_type", itemType)
+            .whereIn("U.user_id", userIdArr);
+
+        return items;
+    }
+
+    public async findUserAndItemsByUserIdsAndItemTypeAndCategoryExperience(userIdArr: any[], itemType: string){
+
+        const items = await knex
+            .select("*")
+            .from("Users as U")
+            .innerJoin('Items as I', 'U.user_id', '=', 'I.user_id')
+            .where("I.item_type", itemType)
+            .where("I.item.category", "EXPERIENCE")
+            .whereIn("U.user_id", userIdArr);
+
+        return items;
     }
 }

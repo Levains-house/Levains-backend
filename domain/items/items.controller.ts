@@ -1,14 +1,15 @@
-import express, {NextFunction, Request, Response} from "express";
+import {NextFunction, Request, Response} from "express";
 import {appConfig} from "../../config/app.config";
 import {NotEnoughRequestDataError} from "./items.error";
 import router from "../users/users.controller";
 import {auth} from "../../middleware/auth";
 import multer from "multer";
-import {multerConfig} from "../../config/multer.config";
+import path from "path";
 
-const upload = multer(multerConfig);
+const itemService = appConfig.ItemService;
+const upload = multer({ dest: path.join(__dirname, '../../uploads/') });
 
-router.post("/register", upload.single('image'), async (request: Request, response: Response, next: NextFunction) => {
+router.post("/register", auth, upload.single('image'), async (request: Request, response: Response, next: NextFunction) => {
 
     try {
 
@@ -20,8 +21,7 @@ router.post("/register", upload.single('image'), async (request: Request, respon
         }
         if(request.file !== undefined){
             const fileData: Express.Multer.File = request.file;
-            console.log(fileData);
-            console.log(request.body.hello);
+            await itemService.uploadImageToS3(fileData);
             return response.sendStatus(200);
         } else {
             return response.sendStatus(500);

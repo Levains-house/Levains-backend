@@ -60,24 +60,27 @@ export class ItemsService {
     // }
 
     public async uploadImageToS3(fileData: Express.Multer.File): Promise<string> {
-        const fileContent: Buffer = await fs.readFileSync(fileData.path);
+        const filePath = path.join(__dirname, `../../uploads/${fileData.filename}`);
+        const fileStream = await fs.createReadStream(filePath);
+        await fileStream.on('error', (error: Error) => {
+            console.log('File Error', error);
+        });
 
-        const imgName = uuid();
         const uploadParams = {
             Bucket: process.env.S3_BUCKET_NAME as string,
-            Key: imgName,
-            Body: fileContent
+            Key: path.basename(filePath),
+            Body: fileStream
         };
 
-        s3.upload(uploadParams, (error: Error, data: SendData) => {
+        await s3.upload(uploadParams, (error: Error, data: SendData) => {
             if (error) {
-                throw new AWSS3Error(500, "파일 업로드에 실패하였습니다");
+                throw new AWSS3Error(500, `파일 업로드에 실패하였습니다:${error}`);
             } else {
                 console.log(`File upload successful=${data.Key}`);
             }
         });
 
-        return imgName;
+        return fileData.originalname;
     }
 
 }

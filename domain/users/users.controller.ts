@@ -6,6 +6,28 @@ import {auth} from "../../middleware/auth";
 
 const router = express.Router();
 const userService = appConfig.UserService;
+const userModel = appConfig.UserModel;
+
+router.get("/", auth, async (request: Request, response: Response, next: NextFunction) => {
+    const userId = response.locals.token.user_id;
+    const role = response.locals.token.role;
+    const range = Number(request.params.range);
+    try {
+        const categoryItems = await userService.getDifferentUsersByRange(userId, role, range);
+        const ExperienceItems = await userService.getExperienceDifferentUsersByRange(userId, role, range);
+
+
+        return response
+            .status(200)
+            .send({
+            category_items: categoryItems,
+            experience_items: ExperienceItems
+        });
+    } catch(error) {
+        next(error);
+    }
+});
+
 
 router.post("/sign-in", async (request: Request, response: Response, next: NextFunction) => {
     const requestBody = request.body;
