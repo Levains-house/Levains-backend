@@ -1,0 +1,20 @@
+FROM node:16.15.0
+
+WORKDIR /app
+
+COPY package.json .
+
+RUN npm install
+RUN npm install typescript -g
+
+COPY . .
+
+RUN tsc
+
+ARG DEFAULT_PORT=80
+
+ENV PORT ${DEFAULT_PORT}
+
+EXPOSE ${PORT}
+
+CMD ["npm", "run", "prod"]

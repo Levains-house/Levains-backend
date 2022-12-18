@@ -1,0 +1,13 @@
+version: "3.8"
+services:
+  backend-prod:
+    container_name: levains-backend-prod
+    build:
+      context: .
+      dockerfile: dockerfiles/Dockerfile-prod
+    env_file:
+      - ./env/prod.env
+    ports:
+      - "80:80"
+    expose:
+      - 80

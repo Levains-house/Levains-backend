@@ -1,0 +1,37 @@
+version: "3.8"
+services:
+  database-dev:
+    container_name: levains-database-dev
+    image: "mysql"
+    volumes:
+      - levains-database-dev-data:/var/lib/mysql
+    env_file:
+      - ./env/dev.env
+    ports:
+      - "3306:3306"
+    networks:
+      - levains-network-dev
+  backend-dev:
+    container_name: levains-backend-dev
+    build:
+      context: .
+      dockerfile: dockerfiles/Dockerfile-dev
+    volumes:
+      - /Volumes/T7/Repository/Levains:/app
+    env_file:
+      - ./env/dev.env
+    ports:
+      - "3001:3001"
+    expose:
+      - 3001
+    depends_on:
+      - database-dev
+    networks:
+      - levains-network-dev
+
+volumes:
+  levains-database-dev-data:
+
+networks:
+  levains-network-dev:
+    driver: bridge
