@@ -13,10 +13,3 @@ export class InvalidFieldTypeError extends CustomError {
         super(message);
     }
 }
-
-export class ItemsNotFoundError extends CustomError {
-
-    constructor(public code: number, message: string) {
-        super(message);
-    }
-}

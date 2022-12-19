@@ -1,4 +1,4 @@
-export const enum ItemCategory {
+export enum ItemCategory {
     CLOTH = "CLOTH",
     THINGS = "THINGS",
     BOOK = "BOOK",

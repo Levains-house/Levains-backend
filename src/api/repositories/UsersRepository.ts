@@ -20,12 +20,18 @@ export class UsersRepository {
         await db
             .insert(user)
             .into("Users")
-            .then((saveUsers) => {
-                return saveUsers;
-            })
             .catch((error) => {
                 throw error;
             });
+    }
+
+    public async findByUsername(username: string): Promise<Array<Users>>{
+        return await db
+            .select('*')
+            .from('Users AS U')
+            .where('U.username', username)
+            .then((findUsers) => { return findUsers; })
+            .catch((error) => { throw error; });
     }
 
     public async findUserAndAddressByUserId(userId: bigint): Promise<any[]>{
@@ -58,33 +64,6 @@ export class UsersRepository {
             .catch((error) => {
                 throw error;
             });
-    }
-
-    public async findByUsername(username: string): Promise<Array<Users>>{
-        const findUsers = await db
-            .select('*')
-            .from('Users AS U')
-            .where('U.username', username)
-            .then((findUsers) => { return findUsers; })
-            .catch((error) => { throw error; });
-
-        return findUsers;
-    }
-
-    public async existsByUsername(username: string) {
-        const users: Array<Users> = await db
-            .select("*")
-            .from("Users as U")
-            .where("U.username", username);
-        //유저 존재유무 반환
-        if(users.length == 0) return false;
-        else return true;
-    }
-
-    public async saveAddress(address: Array<Address>) {
-        await db
-            .insert(address)
-            .into("Address");
     }
 
     public async findSharedItemsByUserIds(userId: bigint, otherUserIds: any[]){
@@ -125,17 +104,6 @@ export class UsersRepository {
             .where("I.purpose", "SHARE")
             .where("I.category", category)
             .whereIn("U.user_id", otherUserIds);
-
-        return items;
-    }
-
-    public async findSharedItemsByUserId(userId: bigint) {
-        const items = await db
-            .select("I.item_id", "I.name", "I.trade_status")
-            .from("Users as U")
-            .innerJoin("Items as I", "U.user_id", "=", "I.user_id")
-            .where("U.user_id", String(userId))
-            .where("I.purpose", "SHARE");
 
         return items;
     }

@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 import {UsersRepository} from "../repositories/UsersRepository";
-import {AddressCreateRequest, SignInRequest} from "../controllers/responses/UsersSigninRequest";
 import {Users} from "../models/Users";
+import {UsersSignInRequest} from "../controllers/requests/UsersSignInRequest";
 
 export class UsersService {
 
@@ -20,8 +20,8 @@ export class UsersService {
         this.usersRepository = usersRepository;
     }
     //TODO: 로그인
-    public async signIn(signInRequest: SignInRequest): Promise<Array<Users>> {
-        const user = signInRequest.toUser();
+    public async signIn(usersSignInRequest: UsersSignInRequest): Promise<Array<Users>> {
+        const user = usersSignInRequest.toUser();
         await this.usersRepository.save(user);
         //저장된 유저 반환
         return await this.usersRepository.findByUsername(user.username as string);
@@ -45,15 +45,6 @@ export class UsersService {
         });
 
         return process.env.JWT_PREFIX + accessToken;
-    }
-
-    public async createAddress(addressCreateRequest: AddressCreateRequest){
-        await this.usersRepository.saveAddress(addressCreateRequest.toAddresses());
-    }
-
-    public async getSharedUserItemsByUserId(userId: bigint) {
-        return await this.usersRepository
-            .findSharedItemsByUserId(userId);
     }
 
     public async getWantedCategoryItems(userId: bigint, role: string, range: number) {

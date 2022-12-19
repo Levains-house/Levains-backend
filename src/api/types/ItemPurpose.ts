@@ -1,4 +1,4 @@
-export const enum ItemPurpose {
+export enum ItemPurpose {
     SHARE = "SHARE",
     WANT = "WANT"
 };

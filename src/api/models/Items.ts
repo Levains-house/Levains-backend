@@ -1,3 +1,6 @@
+import {ItemTradeStatus} from "../types/ItemTradeStatus";
+import {ItemCategory} from "../types/ItemCategory";
+import {ItemPurpose} from "../types/ItemPurpose";
 
 export class Items {
 
@@ -5,11 +8,11 @@ export class Items {
     public user_id: bigint | undefined;
     public name: string | undefined;
     public description: string | undefined;
-    public img_name: string | undefined;
-    public img_url: string | undefined;
-    public purpose: string | undefined;
-    public category: string | undefined;
-    public trade_status: string | undefined;
+    public img_name?: string | undefined;
+    public img_url?: string | undefined;
+    public purpose: ItemPurpose | undefined;
+    public category: ItemCategory | undefined;
+    public trade_status: ItemTradeStatus | undefined;
 }
 
 export class ItemBuilder {
@@ -45,17 +48,17 @@ export class ItemBuilder {
         return this;
     }
 
-    itemType(itemType: string){
-        this.item.purpose = itemType;
+    purpose(purpose: ItemPurpose){
+        this.item.purpose = purpose;
         return this;
     }
 
-    category(category: string){
+    category(category: ItemCategory){
         this.item.category = category;
         return this;
     }
 
-    tradeStatus(tradeStatus: string){
+    tradeStatus(tradeStatus: ItemTradeStatus){
         this.item.trade_status = tradeStatus;
         return this;
     }

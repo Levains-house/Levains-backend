@@ -1,9 +1,11 @@
+import {UserRole} from "../types/UserRole";
+
 export class Users {
 
     public user_id: bigint | undefined;
     public username: string | undefined;
     public kakao_talk_chatting_url: string | undefined;
-    public role: string | undefined;
+    public role: UserRole | undefined;
 }
 
 export class UserBuilder {
@@ -24,7 +26,7 @@ export class UserBuilder {
         return this;
     }
 
-    role(role: string){
+    role(role: UserRole){
         this.user.role = role;
         return this;
     }

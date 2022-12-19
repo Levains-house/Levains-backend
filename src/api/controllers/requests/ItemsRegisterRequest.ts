@@ -1,18 +1,21 @@
 import {ItemBuilder} from "../../models/Items";
+import {ItemPurpose} from "../../types/ItemPurpose";
+import {ItemCategory} from "../../types/ItemCategory";
+import {ItemTradeStatus} from "../../types/ItemTradeStatus";
 
 export class ItemRegisterRequest {
 
     private readonly _user_id: bigint;
-    private readonly _purpose: string;
-    private readonly _category: string;
+    private readonly _purpose: ItemPurpose;
+    private readonly _category: ItemCategory;
     private readonly _name: string;
     private readonly _description: string;
-    private readonly _img_name: string;
-    private readonly _img_url: string;
+    private _img_name?: string;
+    private _img_url?: string;
 
-    constructor(user_id: bigint, item_type: string, category: string, name: string, description: string, img_name: string, img_url: string) {
+    constructor(user_id: bigint, purpose: ItemPurpose, category: ItemCategory, name: string, description: string, img_name?: string, img_url?: string) {
         this._user_id = user_id;
-        this._purpose = item_type;
+        this._purpose = purpose;
         this._category = category;
         this._name = name;
         this._description = description;
@@ -24,7 +27,7 @@ export class ItemRegisterRequest {
         return this._user_id;
     }
 
-    get category(): string {
+    get category(): ItemCategory {
         return this._category;
     }
 
@@ -37,23 +40,31 @@ export class ItemRegisterRequest {
     }
 
     get img_name(): string {
-        return this._img_name;
+        return <string>this._img_name;
     }
 
     get img_url(): string {
-        return this._img_url;
+        return <string>this._img_url;
     }
 
-    get purpose(): string {
+    get purpose(): ItemPurpose {
         return this._purpose;
+    }
+
+    set img_name(value: string) {
+        this._img_name = value;
+    }
+
+    set img_url(value: string) {
+        this._img_url = value;
     }
 
     public toItem(){
         return new ItemBuilder()
             .userId(this.user_id)
-            .itemType(this.purpose)
+            .purpose(this.purpose)
             .category(this.category)
-            .tradeStatus("BEFORE")
+            .tradeStatus(ItemTradeStatus.BEFORE)
             .name(this.name)
             .description(this.description)
             .imgName(this.img_name)
