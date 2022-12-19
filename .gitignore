@@ -107,5 +107,5 @@ dist
 package-lock.json
 env
 .idea
-sql/data.sql
-sql/persona.sql
+src/sql/data.sql
+src/sql/persona.sql

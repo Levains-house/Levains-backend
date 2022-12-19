@@ -14,7 +14,7 @@
     /* Skip type checking all .d.ts files.(기본 라이브러리의 타입 체크를 스킵한다) */
     "skipLibCheck": true,
     // 컴파일 후 파일이 저장되는 위치 지정
-    "outDir": "./dist",
+    "outDir": "./src/dist",
 
     "typeRoots": ["./node_modules/@types"],
 

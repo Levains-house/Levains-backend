@@ -1,2 +1,18 @@
 node_modules
 package-lock.json
+
+### Docker ###
+dockerfiles
+docker-compose-dev.yml
+docker-compose-prod.yml
+.dockerignore
+
+### Git ###
+.git
+.github
+.gitignore
+LICENSE
+README.md
+
+### Test ###
+test
