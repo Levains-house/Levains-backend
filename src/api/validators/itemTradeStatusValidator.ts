@@ -1,8 +1,8 @@
 import {NextFunction, Request, Response} from "express";
-import {NotEnoughRequestDataError} from "../errors/UsersError";
 import {StatusCodes} from "http-status-codes";
 import {ERROR_MESSAGE} from "../utils/ErrorMessageProperties";
 import {ItemTradeStatus} from "../types/ItemTradeStatus";
+import {InvalidFieldTypeError, NotEnoughRequestDataError} from "../errors/CommonError";
 
 export const itemTradeStatusValidator = (request: Request, response: Response, next: NextFunction) => {
 
@@ -15,7 +15,7 @@ export const itemTradeStatusValidator = (request: Request, response: Response, n
 
         if(typeof BigInt(requestBody.item_id) !== "bigint"
             || !(requestBody.trade_status in ItemTradeStatus)){
-            throw new NotEnoughRequestDataError(StatusCodes.BAD_REQUEST, ERROR_MESSAGE.BAD_REQUEST_2);
+            throw new InvalidFieldTypeError(StatusCodes.BAD_REQUEST, ERROR_MESSAGE.BAD_REQUEST_2);
         }
 
         return next();

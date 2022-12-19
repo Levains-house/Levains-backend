@@ -31,6 +31,7 @@ export class UsersService {
         return await this.usersRepository.findByUsername(username);
     }
 
+    //TODO: 액세스 토큰 발급
     public async issueJwtToken(user: Users): Promise<string> {
 
         const accessToken = jwt.sign({
@@ -47,74 +48,4 @@ export class UsersService {
         return process.env.JWT_PREFIX + accessToken;
     }
 
-    public async getWantedCategoryItems(userId: bigint, role: string, range: number) {
-        // 현재 사용자, 주소 정보들을 불러온다.
-        const users = await this.usersRepository
-            .findUserAndAddressByUserId(userId);
-        // 현재 사용자와 다른 유형의 사용자, 주소 정보들을 불러온다.
-        const otherUsers = await this.usersRepository
-            .findUserAndAddressByUserIdAndOppositeRole(userId, role);
-        // 다른 유형의 사용자 중에 거리 범위내에 있는 사용자를 조회한다.
-        const userIds = await this.getValidUserBetweenTwoUsersByRange(users, otherUsers, range);
-
-        // 조회한 다른 유형의 사용자의 PK로 상품 조회
-        return await this.usersRepository
-            .findSharedItemsByUserIds(userId, userIds);
-    }
-
-    public async getWantedCategoryItemsByExperience(userId: bigint, role: string, range: number) {
-        const user = await this.usersRepository
-            .findUserAndAddressByUserId(userId);
-        const difUsers = await this.usersRepository
-            .findUserAndAddressByUserIdAndOppositeRole(userId, role);
-
-        const userIds = await this.getValidUserBetweenTwoUsersByRange(user, difUsers, range);
-
-        return await this.usersRepository
-            .findWantItemsByUserIdsAndCategory(userIds, "EXPERIENCE");
-    }
-
-    private async getValidUserBetweenTwoUsersByRange(users: any[], otherUsers: any[], range: number){
-        let userIds = Array();
-        for(let i = 0; i < users.length; i++){
-            for(let j = 0; j < otherUsers.length; j++){
-                const distance = await this.getDistance(
-                    users[i].latitude,
-                    users[i].longitude,
-                    otherUsers[j].latitude,
-                    otherUsers[j].longitude
-                );
-
-                if(distance <= range){
-                    userIds.push(otherUsers[j].user_id);
-                }
-            }
-        }
-        userIds.filter((element, index) => {
-            return userIds.indexOf(element) === index;
-        });
-
-        return userIds;
-    }
-
-    private async getDistance(lat1: number, lon1: number, lat2: number, lon2: number) {
-        if ((lat1 == lat2) && (lon1 == lon2))
-            return 0;
-
-        var radLat1 = Math.PI * lat1 / 180;
-        var radLat2 = Math.PI * lat2 / 180;
-        var theta = lon1 - lon2;
-        var radTheta = Math.PI * theta / 180;
-        var dist = Math.sin(radLat1) * Math.sin(radLat2) + Math.cos(radLat1) * Math.cos(radLat2) * Math.cos(radTheta);
-        if (dist > 1)
-            dist = 1;
-
-        dist = Math.acos(dist);
-        dist = dist * 180 / Math.PI;
-        dist = dist * 60 * 1.1515 * 1.609344 * 1000;
-        if (dist < 100) dist = Math.round(dist / 10) * 10;
-        else dist = Math.round(dist / 100) * 100;
-
-        return dist / 1000;
-    }
 }

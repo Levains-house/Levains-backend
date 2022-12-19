@@ -1,11 +1,11 @@
-export class UserHomeResponse {
+export class ItemsListResponse {
 
-    constructor(public category_items: Array<CategoryItemResponse>,
-                public experience_items: Array<ExperienceItemResponse>) {}
+    constructor(public recommend_and_opposite_wanted_items: Array<RecommendAndOppositeWantedItem>,
+                public experience_items: Array<ExperienceItem>) {}
 
 }
 
-export class CategoryItemResponse {
+export class RecommendAndOppositeWantedItem {
     public item_id: bigint | undefined;
     public img_url: string | undefined;
     public name: string | undefined;
@@ -29,20 +29,18 @@ export class CategoryItemResponse {
     }
 }
 
-export class ExperienceItemResponse {
+export class ExperienceItem {
     public item_id: bigint | undefined;
     public img_url: string | undefined;
     public name: string | undefined;
     public description: string | undefined;
     public category: string | undefined;
-    public kakao_talk_chatting_url: string | undefined;
 
-    constructor(item_id: bigint | undefined, img_url: string | undefined, name: string | undefined, description: string | undefined, category: string | undefined, kakao_talk_chatting_url: string | undefined) {
+    constructor(item_id: bigint | undefined, img_url: string | undefined, name: string | undefined, description: string | undefined, category: string | undefined) {
         this.item_id = item_id;
         this.img_url = img_url;
         this.name = name;
         this.description = description;
         this.category = category;
-        this.kakao_talk_chatting_url = kakao_talk_chatting_url;
     }
 }

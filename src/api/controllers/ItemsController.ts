@@ -1,6 +1,5 @@
 import {NextFunction, Request, Response} from "express";
 import {appConfig} from "../config/appConfig";
-import {NotEnoughRequestDataError} from "../errors/ItemsError";
 import router from "./UsersController";
 import {auth} from "../middlewares/auth";
 import multer from "multer";
@@ -13,62 +12,66 @@ import {ERROR_MESSAGE} from "../utils/ErrorMessageProperties";
 import {itemTradeStatusValidator} from "../validators/itemTradeStatusValidator";
 import {MyItemsListResponse} from "./responses/MyItemsListResponse";
 import {ItemTradeStatus} from "../types/ItemTradeStatus";
+import {ExperienceItem, ItemsListResponse, RecommendAndOppositeWantedItem} from "./responses/ItemsListResponse";
+import {itemListValidator} from "../validators/itemListValidator";
+import {NotEnoughRequestDataError} from "../errors/CommonError";
 
 const itemService = appConfig.ItemsService;
 const upload = multer({ dest: path.join(__dirname, process.env.IMAGE_UPLOAD_DESTINATION as string) });
 
-//TODO: /api/items?range={range}
-router.get("/", auth, async (request: Request, response: Response, next: NextFunction) => {
+//TODO: [GET] /api/items?range={range}
+router.get("/", auth, itemListValidator, async (request: Request, response: Response, next: NextFunction) => {
 
     try {
         const userId = response.locals.token.user_id;
         const role = response.locals.token.role;
+        const kakaoTalkChattingUrl = response.locals.token.kakao_talk_chatting_url;
         const range = Number(request.query.range);
 
-    } catch(error) {
+        const recommendAndOppositeWantedItems = await itemService.getRecommendItemsList(userId, role, range);
+        const experienceItems = await itemService.getRecommendExperienceItemsList(userId, role, range);
 
+        const recommendAndOppositeWantedItemsResponse = Array<RecommendAndOppositeWantedItem>();
+        for(let i = 0; i < recommendAndOppositeWantedItems.recommend_items.length; i++){
+            const random = Math.floor(Math.random() * recommendAndOppositeWantedItems
+                .opposite_wanted_items.length);
+            const wantedItems = recommendAndOppositeWantedItems.opposite_wanted_items[random];
+            recommendAndOppositeWantedItemsResponse.push(new RecommendAndOppositeWantedItem(
+                recommendAndOppositeWantedItems.recommend_items[i].item_id,
+                recommendAndOppositeWantedItems.recommend_items[i].img_url,
+                recommendAndOppositeWantedItems.recommend_items[i].name,
+                recommendAndOppositeWantedItems.recommend_items[i].description,
+                recommendAndOppositeWantedItems.recommend_items[i].category,
+                kakaoTalkChattingUrl,
+                wantedItems.name,
+                wantedItems.description,
+                wantedItems.category,
+            ))
+        }
+
+        const experienceItemsResponse = experienceItems.map(e => new ExperienceItem(
+            e.item_id,
+            e.img_url,
+            e.name,
+            e.description,
+            e.category
+        ));
+
+        return response
+            .status(StatusCodes.OK)
+            .send(new ItemsListResponse(
+                recommendAndOppositeWantedItemsResponse,
+                experienceItemsResponse
+            ));
+    } catch(error) {
+        next(error);
     }
 
-    // try {
-    //     const categoryItems = await userService
-    //         .getWantedCategoryItems(userId, role, range);
-    //     const experienceItems = await userService
-    //         .getWantedCategoryItemsByExperience(userId, role, range);
-    //
-    //     const categoryItemsResponse = Array<CategoryItemResponse>();
-    //     for(let i = 0; i < categoryItems[0].length; i++){
-    //         categoryItemsResponse.push(new CategoryItemResponse(
-    //             categoryItems[0][i].item_id,
-    //             categoryItems[0][i].img_url,
-    //             categoryItems[0][i].name,
-    //             categoryItems[0][i].description,
-    //             categoryItems[0][i].category,
-    //             categoryItems[0][i].kakao_talk_chatting_url,
-    //             categoryItems[1].name,
-    //             categoryItems[1].description,
-    //             categoryItems[1].category
-    //         ))
-    //     }
-    //
-    //     const experienceItemsResponse = Array<ExperienceItemResponse>();
-    //     experienceItems.map(e => experienceItemsResponse.push(e));
-    //     return response
-    //         .status(200)
-    //         .send(new UserHomeResponse(
-    //             categoryItemsResponse,
-    //             experienceItemsResponse
-    //         ));
-    // } catch(error) {
-    //     next(error);
-    // }
-
-}).use("/register", async (request: Request, response: Response, next: NextFunction) => {
-    return response.status(StatusCodes.METHOD_NOT_ALLOWED).send({message: ERROR_MESSAGE.METHOD_NOT_ALLOWED});
 });
 
-//TODO: /api/items
-router.post("/", auth,
-    upload.single('image'), itemRegisterValidator, async (request: Request, response: Response, next: NextFunction) => {
+//TODO: [POST] /api/items
+router.post("/", auth, upload.single('image'),
+    itemRegisterValidator, async (request: Request, response: Response, next: NextFunction) => {
 
     try {
         const userId = response.locals.token.user_id;
@@ -97,11 +100,9 @@ router.post("/", auth,
     } catch(error) {
         next(error);
     }
-}).use("/register", async (request: Request, response: Response, next: NextFunction) => {
-    return response.status(StatusCodes.METHOD_NOT_ALLOWED).send({message: ERROR_MESSAGE.METHOD_NOT_ALLOWED});
 });
 
-//TODO: /api/items/my-list
+//TODO: [GET] /api/items/my-list
 router.get("/my-list", auth, async (request: Request, response: Response, next: NextFunction) => {
 
     try {
@@ -114,8 +115,6 @@ router.get("/my-list", auth, async (request: Request, response: Response, next: 
             i.trade_status as ItemTradeStatus
         ));
 
-        console.log(myItemsListResponse[0].name);
-
         return response
             .status(StatusCodes.OK)
             .send({
@@ -125,11 +124,9 @@ router.get("/my-list", auth, async (request: Request, response: Response, next: 
         next(error);
     }
 
-}).use("/my-list", async (request: Request, response: Response, next: NextFunction) => {
-    return response.status(StatusCodes.METHOD_NOT_ALLOWED).send({message: ERROR_MESSAGE.METHOD_NOT_ALLOWED});
 });
 
-//TODO: /api/items/my-list/trade_status
+//TODO: [PUT] /api/items/my-list/trade_status
 router.put("/my-list/trade-status", auth, itemTradeStatusValidator, async (request: Request, response: Response, next: NextFunction) => {
 
     try {
@@ -141,8 +138,6 @@ router.put("/my-list/trade-status", auth, itemTradeStatusValidator, async (reque
     } catch(error) {
         next(error);
     }
-}).use("/my-list/trade-status", async (request: Request, response: Response, next: NextFunction) => {
-    return response.status(StatusCodes.METHOD_NOT_ALLOWED).send({message: ERROR_MESSAGE.METHOD_NOT_ALLOWED});
 });
 
 export default router;

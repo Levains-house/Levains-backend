@@ -2,242 +2,16 @@
   "swagger": "2.0",
   "info": {
     "title": "멘도롱주멍 API 문서",
-    "description": "멘도롱주멍 프로젝트 API 명세서 입니다.",
+    "description": "멘도롱주멍 서비스 API 명세서 입니다.",
     "version": "1.0.0",
     "license": "MIT"
   },
-  "host": "http://levains-lb-2013408822.ap-northeast-2.elb.amazonaws.com",
+  "host": "https://{domain}.com",
   "basePath": "/",
   "schemes": [
-    "http"
+    "https"
   ],
   "paths": {
-    "/api/health-check": {
-      "get": {
-        "description": "",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/users": {
-      "get": {
-        "summary": "멘도롱주멍 홈 화면",
-        "description": "멘도롱주멍 화면 API",
-        "parameters": [
-          {
-            "name": "authorization",
-            "in": "header",
-            "type": "string",
-            "required": true
-          },
-          {
-            "name": "range",
-            "in": "path",
-            "type": "number",
-            "required": true
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "category_items": {
-                  "type": "array",
-                  "items": {
-                    "properties": {
-                      "item_id": {
-                        "type": "number",
-                        "description": "상품 id"
-                      },
-                      "img_url": {
-                        "type": "string",
-                        "description": "상품 이미지 링크"
-                      },
-                      "name": {
-                        "type": "string",
-                        "description": "상품 이름"
-                      },
-                      "description": {
-                        "type": "string",
-                        "description": "상품 상세정보"
-                      },
-                      "category": {
-                        "type": "string",
-                        "description": "상품 카테고리",
-                        "example": "CLOTH, THINGS, BOOK, LIVE_THINGS, BABY_THINGS, EXPERIENCE"
-                      },
-                      "kakao_talk_chatting_url": {
-                        "type": "string",
-                        "description": "사용자 오픈 채팅방"
-                      },
-                      "want_name": {
-                        "type": "string",
-                        "description": "원하는 상품 이름"
-                      },
-                      "want_description": {
-                        "type": "number",
-                        "description": "원하는 상품 상세정보"
-                      },
-                      "want_category": {
-                        "type": "string",
-                        "description": "원하는 상품 카테고리",
-                        "example": "CLOTH, THINGS, BOOK, LIVE_THINGS, BABY_THINGS, EXPERIENCE"
-                      }
-                    }
-                  }
-                },
-                "experience_items": {
-                  "type": "array",
-                  "items": {
-                    "properties": {
-                      "item_id": {
-                        "type": "number",
-                        "description": "상품 id"
-                      },
-                      "img_url": {
-                        "type": "string",
-                        "description": "상품 이미지 링크"
-                      },
-                      "name": {
-                        "type": "string",
-                        "description": "상품 이름"
-                      },
-                      "description": {
-                        "type": "number",
-                        "description": "상품 상세정보"
-                      },
-                      "category": {
-                        "type": "string",
-                        "description": "상품 카테고리",
-                        "example": "CLOTH, THINGS, BOOK, LIVE_THINGS, BABY_THINGS, EXPERIENCE"
-                      },
-                      "kakao_talk_chatting_url": {
-                        "type": "string",
-                        "description": "사용자 오픈 채팅방"
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "요청 파라미터가 부족합니다",
-            "schema": {
-              "properties": {
-                "message": {
-                  "type": "string",
-                  "example": "요청 파라미터가 부족합니다"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "페이지를 찾을 수 없습니다",
-            "schema": {
-              "properties": {
-                "message": {
-                  "type": "string",
-                  "example": "페이지를 찾을 수 없습니다"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "서버 내부 오류입니다",
-            "schema": {
-              "properties": {
-                "message": {
-                  "type": "string",
-                  "example": "서버 내부 오류입니다"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/users/profiles": {
-      "get": {
-        "summary": "나의 주멍",
-        "description": "나의 주멍 조회 API",
-        "parameters": [
-          {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "items": {
-                  "type": "array",
-                  "items": {
-                    "properties": {
-                      "item_id": {
-                        "type": "number",
-                        "description": "상품 id"
-                      },
-                      "name": {
-                        "type": "string",
-                        "description": "상품 이름"
-                      },
-                      "trade_status": {
-                        "type": "string",
-                        "description": "상품 나눔 상태"
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "요청 파라미터가 부족합니다",
-            "schema": {
-              "properties": {
-                "message": {
-                  "type": "string",
-                  "example": "요청 파라미터가 부족합니다"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "페이지를 찾을 수 없습니다",
-            "schema": {
-              "properties": {
-                "message": {
-                  "type": "string",
-                  "example": "페이지를 찾을 수 없습니다"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "서버 내부 오류입니다",
-            "schema": {
-              "properties": {
-                "message": {
-                  "type": "string",
-                  "example": "서버 내부 오류입니다"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/api/users/sign-in": {
       "post": {
         "summary": "멘도롱주멍 로그인",
@@ -268,7 +42,7 @@
         ],
         "responses": {
           "201": {
-            "description": "OK",
+            "description": "CREATED",
             "schema": {
               "properties": {
                 "access_token": {
@@ -325,7 +99,7 @@
         }
       }
     },
-    "/api/users/sign-in/address": {
+    "/api/address": {
       "post": {
         "summary": "멘도롱주멍 사용자 주소 입력",
         "description": "멘도롱주멍 사용자 주소 입력 API",
@@ -377,6 +151,17 @@
               }
             }
           },
+          "401": {
+            "description": "인가받지 않은 사용자 입니다",
+            "schema": {
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "인가받지 않은 사용자 입니다"
+                }
+              }
+            }
+          },
           "404": {
             "description": "페이지를 찾을 수 없습니다",
             "schema": {
@@ -402,7 +187,152 @@
         }
       }
     },
-    "/api/items/register": {
+    "/api/items": {
+      "get": {
+        "summary": "멘도롱주멍 홈 화면",
+        "description": "멘도롱주멍 화면 API",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "range",
+            "in": "path",
+            "type": "number",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "recommend_and_opposite_wanted_items": {
+                  "type": "array",
+                  "items": {
+                    "properties": {
+                      "item_id": {
+                        "type": "number",
+                        "description": "물건 id"
+                      },
+                      "img_url": {
+                        "type": "string",
+                        "description": "물건 이미지 링크"
+                      },
+                      "name": {
+                        "type": "string",
+                        "description": "물건 이름"
+                      },
+                      "description": {
+                        "type": "string",
+                        "description": "물건 상세정보"
+                      },
+                      "category": {
+                        "type": "string",
+                        "description": "물건 카테고리",
+                        "example": "CLOTH, THINGS, BOOK, LIVE_THINGS, BABY_THINGS, EXPERIENCE"
+                      },
+                      "kakao_talk_chatting_url": {
+                        "type": "string",
+                        "description": "사용자 오픈 채팅방"
+                      },
+                      "want_name": {
+                        "type": "string",
+                        "description": "원하는 물건 이름"
+                      },
+                      "want_description": {
+                        "type": "string",
+                        "description": "원하는 물건 상세정보"
+                      },
+                      "want_category": {
+                        "type": "string",
+                        "description": "원하는 물건 카테고리",
+                        "example": "CLOTH, THINGS, BOOK, LIVE_THINGS, BABY_THINGS, EXPERIENCE"
+                      }
+                    }
+                  }
+                },
+                "experience_items": {
+                  "type": "array",
+                  "items": {
+                    "properties": {
+                      "item_id": {
+                        "type": "number",
+                        "description": "물건 id"
+                      },
+                      "img_url": {
+                        "type": "string",
+                        "description": "물건 이미지 링크"
+                      },
+                      "name": {
+                        "type": "string",
+                        "description": "물건 이름"
+                      },
+                      "description": {
+                        "type": "string",
+                        "description": "물건 상세정보"
+                      },
+                      "category": {
+                        "type": "string",
+                        "description": "물건 카테고리",
+                        "example": "CLOTH, THINGS, BOOK, LIVE_THINGS, BABY_THINGS, EXPERIENCE"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "요청 파라미터가 부족합니다",
+            "schema": {
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "요청 파라미터가 부족합니다"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "인가받지 않은 사용자 입니다",
+            "schema": {
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "인가받지 않은 사용자 입니다"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "페이지를 찾을 수 없습니다",
+            "schema": {
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "페이지를 찾을 수 없습니다"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "서버 내부 오류입니다",
+            "schema": {
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "서버 내부 오류입니다"
+                }
+              }
+            }
+          }
+        }
+      },
       "post": {
         "summary": "멘도롱주멍 상품 등록",
         "description": "멘도롱주멍 상품 등록 API",
@@ -420,25 +350,178 @@
               "properties": {
                 "image": {
                   "type": "number",
-                  "description": "상품 사진 바이너리 데이터"
+                  "description": "물건 사진 바이너리 데이터"
                 },
                 "name": {
                   "type": "string",
-                  "description": "상품 이름"
+                  "description": "물건 이름"
                 },
                 "description": {
                   "type": "string",
-                  "description": "상품 상세정보"
+                  "description": "물건 상세정보"
                 },
                 "category": {
                   "type": "string",
-                  "description": "상품 카테고리",
+                  "description": "물건 카테고리",
                   "example": "CLOTH, THINGS, BOOK, LIVE_THINGS, BABY_THINGS, EXPERIENCE"
                 },
                 "purpose": {
                   "type": "string",
-                  "description": "상품 나눔 혹은 원하는 타입",
+                  "description": "물건 나눔 혹은 원하는 타입",
                   "example": "SHARE, WANT"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "요청 파라미터가 부족합니다",
+            "schema": {
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "요청 파라미터가 부족합니다"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "인가받지 않은 사용자 입니다",
+            "schema": {
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "인가받지 않은 사용자 입니다"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "페이지를 찾을 수 없습니다",
+            "schema": {
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "페이지를 찾을 수 없습니다"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "서버 내부 오류입니다",
+            "schema": {
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "서버 내부 오류입니다"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/items/my-list": {
+      "get": {
+        "summary": "나의 주멍",
+        "description": "나의 주멍 조회 API",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "items": {
+                  "type": "array",
+                  "items": {
+                    "properties": {
+                      "item_id": {
+                        "type": "number",
+                        "description": "물건 id"
+                      },
+                      "name": {
+                        "type": "string",
+                        "description": "물건 이름"
+                      },
+                      "trade_status": {
+                        "type": "string",
+                        "description": "물건 나눔 상태"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "인가받지 않은 사용자 입니다",
+            "schema": {
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "인가받지 않은 사용자 입니다"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "페이지를 찾을 수 없습니다",
+            "schema": {
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "페이지를 찾을 수 없습니다"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "서버 내부 오류입니다",
+            "schema": {
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "서버 내부 오류입니다"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/items/my-list/trade-status": {
+      "put": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "item_id": {
+                  "type": "number",
+                  "description": "물건 id"
+                },
+                "trade_status": {
+                  "type": "string",
+                  "description": "물건 나눔 상태"
                 }
               }
             }
@@ -484,33 +567,10 @@
         }
       }
     },
-    "/api/items/status": {
-      "put": {
+    "/api/health-check": {
+      "get": {
         "description": "",
-        "parameters": [
-          {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
-          },
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "item_id": {
-                  "type": "string",
-                  "description": "상품 id"
-                },
-                "trade_status": {
-                  "type": "string",
-                  "description": "상품 나눔 여부"
-                }
-              }
-            }
-          }
-        ],
+        "parameters": [],
         "responses": {
           "200": {
             "description": "OK"

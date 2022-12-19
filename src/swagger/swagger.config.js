@@ -3,13 +3,13 @@ const path = require("path");
 
 const docs = {
     info: {
-        title: "르방이들 API 문서",
-        description: "르방이들 프로젝트 API 명세서 입니다.",
+        title: "멘도롱주멍 API 문서",
+        description: "멘도롱주멍 서비스 API 명세서 입니다.",
         version: "1.0.0",
         license: "MIT"
     },
-    host: "localhost:3001",
-    schemas: ["http"]
+    host: "https://{domain}.com",
+    schemas: ["https"]
 };
 
 const outputFile = "./auto-swagger-output.json";

@@ -1,7 +1,7 @@
 import {NextFunction, Request, Response} from "express";
-import {NotEnoughRequestDataError} from "../errors/UsersError";
 import {StatusCodes} from "http-status-codes";
 import {ERROR_MESSAGE} from "../utils/ErrorMessageProperties";
+import {InvalidFieldTypeError, NotEnoughRequestDataError} from "../errors/CommonError";
 
 export const AddressRegisterValidate = (request: Request, response: Response, next: NextFunction) => {
 
@@ -18,7 +18,7 @@ export const AddressRegisterValidate = (request: Request, response: Response, ne
             }
 
             if(typeof address.latitude !== "number" || typeof address.longitude !== "number"){
-                throw new NotEnoughRequestDataError(StatusCodes.BAD_REQUEST, ERROR_MESSAGE.BAD_REQUEST_2);
+                throw new InvalidFieldTypeError(StatusCodes.BAD_REQUEST, ERROR_MESSAGE.BAD_REQUEST_2);
             }
         }
 

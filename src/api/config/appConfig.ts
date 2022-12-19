@@ -11,5 +11,5 @@ export const appConfig = {
     ItemsRepository: ItemsRepository.getInstance(),
     UsersService: UsersService.getInstance(UsersRepository.getInstance()),
     AddressService: AddressService.getInstance(AddressRepository.getInstance()),
-    ItemsService: ItemsService.getInstance(ItemsRepository.getInstance())
+    ItemsService: ItemsService.getInstance(ItemsRepository.getInstance(), UsersRepository.getInstance())
 }

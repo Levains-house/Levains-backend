@@ -8,23 +8,28 @@ import {ItemRegisterRequest} from "../controllers/requests/ItemsRegisterRequest"
 import {StatusCodes} from "http-status-codes";
 import {ERROR_MESSAGE} from "../utils/ErrorMessageProperties";
 import {ItemsNotFoundError} from "../errors/ItemsError";
+import {UserRole} from "../types/UserRole";
+import {UsersRepository} from "../repositories/UsersRepository";
+import {ItemCategory} from "../types/ItemCategory";
 import SendData = ManagedUpload.SendData;
 
 export class ItemsService {
 
     private itemsRepository: ItemsRepository;
+    private usersRepository: UsersRepository;
 
     private static instance: ItemsService;
 
-    public static getInstance(itemsRepository: ItemsRepository){
+    public static getInstance(itemsRepository: ItemsRepository, usersRepository: UsersRepository){
         if(this.instance !== undefined){
             return this.instance;
         }
-        return new ItemsService(itemsRepository);
+        return new ItemsService(itemsRepository, usersRepository);
     }
 
-    private constructor(itemsRepository: ItemsRepository){
+    private constructor(itemsRepository: ItemsRepository, usersRepository: UsersRepository){
         this.itemsRepository = itemsRepository;
+        this.usersRepository = usersRepository;
     }
 
     public async getMyItemsList(userId: bigint) {
@@ -65,11 +70,98 @@ export class ItemsService {
         }).promise();
 
         //S3에 파일을 저장했으면 로컬 파일 제거
-        await fs.unlinkSync(fileData.path);
+        await this.deleteFileFromLocalStorage(fileData.path);
 
         return {
             img_name: fileName,
             img_url: result.Location
         };
+    }
+
+    private async deleteFileFromLocalStorage(path: string): Promise<void> {
+        await fs.unlinkSync(path);
+    }
+
+    public async getRecommendItemsList(userId: bigint, role: UserRole, range: number){
+        const users = await this.usersRepository.findUserAndAddressByUserId(userId);
+        let oppositeRole = UserRole.LOCAL;
+        if(role === UserRole.LOCAL){
+            oppositeRole = UserRole.TRAVEL;
+        }
+
+        const oppositeUsers = await this.usersRepository.findUserAndAddressByRole(oppositeRole);
+
+        //다른 역할의 사용자들과 거리 비교해서 거리 안에 들어오는 유저를 가져온다.
+        const oppositeUserIds = await this.getValidUserBetweenTwoUsersByRange(users[0], oppositeUsers, range);
+        //내가 원하는 물건들을 가져온다.
+        const wantedItems = await this.itemsRepository.findWantedItemsByUserId(userId);
+        const wantedCategories = Array<ItemCategory>();
+        wantedItems.map(i => wantedCategories.push(i.category as ItemCategory));
+
+        const recommendItems = await this.itemsRepository.findSharedItemsByUserIdsAndCategories(oppositeUserIds, wantedCategories);
+        const oppositeWantedItems = await this.itemsRepository.findWantedItemsByUserIds(oppositeUserIds);
+
+        return {
+            recommend_items: recommendItems,
+            opposite_wanted_items: oppositeWantedItems
+        }
+    }
+
+    public async getRecommendExperienceItemsList(userId: bigint, role: UserRole, range: number){
+        const users = await this.usersRepository.findUserAndAddressByUserId(userId);
+        let oppositeRole = UserRole.LOCAL;
+        if(role === UserRole.LOCAL){
+            oppositeRole = UserRole.TRAVEL;
+        }
+
+        const otherUsers = await this.usersRepository.findUserAndAddressByRole(oppositeRole);
+
+        //다른 역할의 사용자들과 거리 비교해서 거리 안에 들어오는 유저를 가져온다.
+        const otherUserIds = await this.getValidUserBetweenTwoUsersByRange(users[0], otherUsers, range);
+        //거리 안의 들어오는 유저들중에 체험 나눔들을 가져온다.
+        return await this.itemsRepository
+            .findSharedItemsByUserIdsAndCategory(otherUserIds, ItemCategory.EXPERIENCE);
+    }
+
+    private async getValidUserBetweenTwoUsersByRange(users: any, otherUsers: any[], range: number){
+        let userIds = Array();
+        for(let j = 0; j < otherUsers.length; j++){
+            const distance = await this.getDistance(
+                users.latitude,
+                users.longitude,
+                otherUsers[j].latitude,
+                otherUsers[j].longitude
+            );
+
+            if(distance <= range){
+                userIds.push(otherUsers[j].user_id);
+            }
+        }
+        userIds.filter((element, index) => {
+            return userIds.indexOf(element) === index;
+        });
+
+        return userIds;
+    }
+
+    private async getDistance(lat1: number, lon1: number, lat2: number, lon2: number) {
+        if ((lat1 == lat2) && (lon1 == lon2))
+            return 0;
+
+        var radLat1 = Math.PI * lat1 / 180;
+        var radLat2 = Math.PI * lat2 / 180;
+        var theta = lon1 - lon2;
+        var radTheta = Math.PI * theta / 180;
+        var dist = Math.sin(radLat1) * Math.sin(radLat2) + Math.cos(radLat1) * Math.cos(radLat2) * Math.cos(radTheta);
+        if (dist > 1)
+            dist = 1;
+
+        dist = Math.acos(dist);
+        dist = dist * 180 / Math.PI;
+        dist = dist * 60 * 1.1515 * 1.609344 * 1000;
+        if (dist < 100) dist = Math.round(dist / 10) * 10;
+        else dist = Math.round(dist / 100) * 100;
+
+        return dist / 1000;
     }
 }

@@ -1,8 +1,8 @@
 import {NextFunction, Request, Response} from "express";
-import {NotEnoughRequestDataError} from "../errors/UsersError";
 import {StatusCodes} from "http-status-codes";
 import {UserRole} from "../types/UserRole";
 import {ERROR_MESSAGE} from "../utils/ErrorMessageProperties";
+import {InvalidFieldTypeError, NotEnoughRequestDataError} from "../errors/CommonError";
 
 const kakaoTalkChattingUrlCheck = "https://open.kakao.com/";
 
@@ -18,7 +18,7 @@ export const signInValidate = (request: Request, response: Response, next: NextF
 
         if(!requestBody.kakao_talk_chatting_url.startsWith(kakaoTalkChattingUrlCheck)
             || !(requestBody.role in UserRole)){
-            throw new NotEnoughRequestDataError(StatusCodes.BAD_REQUEST, ERROR_MESSAGE.BAD_REQUEST_2);
+            throw new InvalidFieldTypeError(StatusCodes.BAD_REQUEST, ERROR_MESSAGE.BAD_REQUEST_2);
         }
 
         return next();

@@ -8,8 +8,8 @@ import {AddressRegisterValidate} from "../validators/addressRegisterValidator";
 const router = express.Router();
 const userService = appConfig.AddressService;
 
-//TODO: 유저 주소 등록 API
-router.post("/register", auth, AddressRegisterValidate, async (request: Request, response: Response, next: NextFunction) => {
+//TODO: [POST] /api/address
+router.post("/", auth, AddressRegisterValidate, async (request: Request, response: Response, next: NextFunction) => {
 
     try {
         const userId = response.locals.token.user_id;
