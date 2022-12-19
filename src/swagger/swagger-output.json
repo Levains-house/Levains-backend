@@ -502,7 +502,8 @@
     },
     "/api/items/my-list/trade-status": {
       "put": {
-        "description": "",
+        "summary": "나의 주멍 나눔상태 변경",
+        "description": "나의 주멍 나눔상태 변경 API",
         "parameters": [
           {
             "name": "authorization",
@@ -569,7 +570,8 @@
     },
     "/api/health-check": {
       "get": {
-        "description": "",
+        "summary": "로드 밸런서 상태 체크",
+        "description": "로드 밸런서 상태 체크 API",
         "parameters": [],
         "responses": {
           "200": {
