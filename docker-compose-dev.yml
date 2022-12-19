@@ -6,7 +6,7 @@ services:
     volumes:
       - levains-database-dev-data:/var/lib/mysql
     env_file:
-      - ./env/dev.env
+      - env/dev.env
     ports:
       - "3306:3306"
     networks:
@@ -17,9 +17,9 @@ services:
       context: .
       dockerfile: dockerfiles/Dockerfile-dev
     volumes:
-      - /Volumes/T7/Repository/Levains:/app
+      - /Volumes/T7/Repository/Levains/src:/app/src
     env_file:
-      - ./env/dev.env
+      - env/dev.env
     ports:
       - "3001:3001"
     expose:
