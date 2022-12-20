@@ -51,3 +51,5 @@
 ![ERD](./README_files/ERD.png)
 
 ## 📌 API 명세서(API Specification)
+
+![ERD](./README_files/api_docs.png)
