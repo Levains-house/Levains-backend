@@ -1,4 +1,4 @@
-CREATE TABLE Users (
+CREATE TABLE users (
     user_id BIGINT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(255) NOT NULL,
     kakao_talk_chatting_url VARCHAR(255) NOT NULL,
@@ -8,7 +8,7 @@ CREATE TABLE Users (
     CONSTRAINT kakaoTalkChattingUrlCheck CHECK(kakao_talk_chatting_url LIKE 'https://open.kakao.com/%')
 );
 
-CREATE TABLE Address (
+CREATE TABLE addresses (
     address_id BIGINT AUTO_INCREMENT PRIMARY KEY,
     user_id BIGINT NOT NULL,
     latitude DOUBLE NOT NULL,
